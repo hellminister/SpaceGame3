@@ -19,6 +19,15 @@ public class SpaceGame extends Application {
 
     public SpaceGame() {
         startScreen = new StartScreen(this);
+        storyTellingScheme = null;
+    }
+
+    public StoryTellingScheme getStoryTellingScheme() {
+        return storyTellingScheme;
+    }
+
+    public void setStoryTellingScheme(StoryTellingScheme storyTellingScheme) {
+        this.storyTellingScheme = storyTellingScheme;
     }
 
     @Override

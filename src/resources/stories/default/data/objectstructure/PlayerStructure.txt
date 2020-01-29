@@ -1,0 +1,8 @@
+s fname What is your first name?
+s lname What is your last name?
+l species human#forman Choose your specie.
+m gender species Choose your gender.
+human male#female
+forman male#female#neuter
+f %s %s fname,lname
+d Name: %s %s%nSpecie: %s%nGender: %s fname,lname,species,gender

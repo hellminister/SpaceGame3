@@ -1,6 +1,7 @@
 package spacegame3.userinterface.startscreen;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableListBase;
 import javafx.event.ActionEvent;
@@ -16,20 +17,22 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import spacegame3.SpaceGame;
+import spacegame3.gamedata.StoryTellingScheme;
 import spacegame3.userinterface.ImageLibrary;
+import spacegame3.util.Utilities;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.logging.Level;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class StartScreen extends Scene {
     private static final Logger LOG = Logger.getLogger(StartScreen.class.getName());
+
     private static final int HEIGHT = 480;
     private static final String BACK_IMAGE_FILE_PATH = "PIA17563-1920x1200.jpg";
-    private static final String CREDIT_FILE = "src/resources/commons/credits.txt";
+    private static final Path CREDIT_FILE = Paths.get("src/resources/commons/credits.txt");
 
     private static final int GRID_PANE_MENU_THIRD = 50;
     private static final int BUTTONS_X_TRANSLATE = -10;
@@ -57,29 +60,32 @@ public class StartScreen extends Scene {
     private static final int MAIN_INFO_BOX_MIN_WIDTH = 200;
     private static final int MAIN_INFO_BOX_X_TRANSLATE = 20;
 
-    private static final int BUTTONS_HORIZONTAL_SPACING = 10;
     private static final int MIDDLE_INFO_BOX_MAX_HEIGHT = 288;
     private static final int MIDDLE_INFO_BOX_PREF_HEIGHT = 288;
     private static final int MIDDLE_INFO_BOX_MIN_HEIGHT = 288;
-    private static final int MIDDLE_INFO_BOX_MAX_WIDTH = BUTTON_MAX_WIDTH * 2 + BUTTONS_HORIZONTAL_SPACING;
-    private static final int MIDDLE_INFO_BOX_PREF_WIDTH = BUTTON_PREF_WIDTH * 2 + BUTTONS_HORIZONTAL_SPACING;
-    private static final int MIDDLE_INFO_BOX_MIN_WIDTH = BUTTON_MIN_WIDTH * 2 + BUTTONS_HORIZONTAL_SPACING;
-    private static final int MIDDLE_PANE_VERTICAL_SPACING = 12;
-    private static final double MIDDLE_BUTTON_PANE_X_TRANSLATE = -8;
-    private static final double MIDDLE_PANE_X_TRANSLATE = -10;
+    private static final int MIDDLE_INFO_BOX_MAX_WIDTH = 400;
+    private static final int MIDDLE_INFO_BOX_PREF_WIDTH = 400;
+    private static final int MIDDLE_INFO_BOX_MIN_WIDTH = 200;
 
 
     private final SpaceGame mainTheater;
     private final Pane insideStoryButtons;
     private final Pane chooseStoryButtons;
+    private final Pane loadGameButtons;
     private final TextArea infoBox;
     private final ListView<String> infoBox2;
-    private final Pane choosePlayerButtons;
-    private final Pane loadGameButtons;
+
+    private final StoryList storyList;
+
+    private Mode mode;
+    private final QuestionBox questionner;
 
     public StartScreen(SpaceGame spaceGame) {
         super(new StackPane());
+        questionner = new QuestionBox();
         mainTheater = spaceGame;
+
+        storyList = new StoryList();
 
         var root = (StackPane) getRoot();
         root.setStyle("-fx-background-color: black");
@@ -115,13 +121,17 @@ public class StartScreen extends Scene {
         // End Create start menu grid pane
 
         // Create Buttons
-        insideStoryButtons = createInsideStoryButtons();
+        insideStoryButtons = createChoosePlayerButtons();
         startScreenGridPane.add(insideStoryButtons, FIRST_COLUMN, FIRST_ROW);
         insideStoryButtons.setVisible(false);
 
         chooseStoryButtons = createChooseStoryButtons();
         startScreenGridPane.add(chooseStoryButtons, FIRST_COLUMN, FIRST_ROW);
         chooseStoryButtons.setVisible(true);
+
+        loadGameButtons = createLoadGameButtons();
+        startScreenGridPane.add(loadGameButtons, FIRST_COLUMN, FIRST_ROW);
+        loadGameButtons.setVisible(false);
 
         // End Create Buttons
 
@@ -131,30 +141,9 @@ public class StartScreen extends Scene {
 
         // Create Middle Pane
 
-        var middlePane = new VBox(MIDDLE_PANE_VERTICAL_SPACING);
-        middlePane.setAlignment(Pos.CENTER);
+        infoBox2 = createMiddleInfoBox();
 
-        infoBox2 = new ListView<>();
-        infoBox2.setEditable(false);
-        infoBox2.setPrefSize(MIDDLE_INFO_BOX_PREF_WIDTH, MIDDLE_INFO_BOX_PREF_HEIGHT);
-        infoBox2.setMaxSize(MIDDLE_INFO_BOX_MAX_WIDTH, MIDDLE_INFO_BOX_MAX_HEIGHT);
-        infoBox2.setMinSize(MIDDLE_INFO_BOX_MIN_WIDTH, MIDDLE_INFO_BOX_MIN_HEIGHT);
-        infoBox2.setStyle("-fx-background-color: grey");
-        infoBox2.setEditable(false);
-
-
-
-        choosePlayerButtons = createChoosePlayerButtons();
-        loadGameButtons = createLoadGameButtons();
-
-        var middleButtons = new StackPane();
-        middleButtons.getChildren().addAll(choosePlayerButtons, loadGameButtons);
-        middleButtons.setTranslateX(MIDDLE_BUTTON_PANE_X_TRANSLATE);
-
-        middlePane.getChildren().addAll(infoBox2, middleButtons);
-        middlePane.setTranslateX(MIDDLE_PANE_X_TRANSLATE);
-
-        startScreenGridPane.add(middlePane, SECOND_COLUMN, FIRST_ROW);
+        startScreenGridPane.add(infoBox2, SECOND_COLUMN, FIRST_ROW);
 
         showStorySelectionItems();
         // End create Start Screen
@@ -163,32 +152,32 @@ public class StartScreen extends Scene {
         root.getChildren().add(createCenteringPanesFor(mainPane));
     }
 
-    private HBox createChoosePlayerButtons() {
-        HBox middlePaneButtons = new HBox(BUTTONS_HORIZONTAL_SPACING);
-        Insets padding = new Insets(TOP_BUTTON_INSET, RIGHT_BUTTON_INSET, BOTTOM_BUTTON_INSET, LEFT_BUTTON_INSET);
-        middlePaneButtons.setPadding(padding);
-        middlePaneButtons.setAlignment(Pos.CENTER);
-
-        Button newPlayer = createButton("New Player", event -> {});
-        Button selectPlayer = createButton("Select", event -> {});
-
-        middlePaneButtons.getChildren().addAll(newPlayer, selectPlayer);
-
-        return middlePaneButtons;
-    }
-
-    private HBox createLoadGameButtons() {
-        HBox middlePaneButtons = new HBox(BUTTONS_HORIZONTAL_SPACING);
-        Insets padding = new Insets(TOP_BUTTON_INSET, RIGHT_BUTTON_INSET, BOTTOM_BUTTON_INSET, LEFT_BUTTON_INSET);
-        middlePaneButtons.setPadding(padding);
-        middlePaneButtons.setAlignment(Pos.CENTER);
-
-        Button load = createButton("Load", event -> {});
-        Button save = createButton("Save", event -> {});
-
-        middlePaneButtons.getChildren().addAll(load, save);
-
-        return middlePaneButtons;
+    private ListView<String> createMiddleInfoBox() {
+        var mInfoBox = new ListView<String>();
+        mInfoBox.setEditable(false);
+        mInfoBox.setPrefSize(MIDDLE_INFO_BOX_PREF_WIDTH, MIDDLE_INFO_BOX_PREF_HEIGHT);
+        mInfoBox.setMaxSize(MIDDLE_INFO_BOX_MAX_WIDTH, MIDDLE_INFO_BOX_MAX_HEIGHT);
+        mInfoBox.setMinSize(MIDDLE_INFO_BOX_MIN_WIDTH, MIDDLE_INFO_BOX_MIN_HEIGHT);
+        mInfoBox.setStyle("-fx-background-color: grey");
+        mInfoBox.setOnMouseReleased(e -> {
+            String selected = mInfoBox.getSelectionModel().getSelectedItem();
+            switch (mode){
+                case STORY:
+                    if ((selected != null) && !selected.isEmpty()) {
+                        infoBox.setText(storyList.get(selected).getDescription());
+                    }
+                    break;
+                case PLAYER:
+                    if ((selected != null) && !selected.isEmpty()) {
+                        infoBox.setText(mainTheater.getStoryTellingScheme().getPlayerList().getPlayer(selected).getDescription());
+                        insideStoryButtons.getChildren().get(0).setDisable(false);
+                    }
+                    break;
+                case LOAD:
+                    break;
+            }
+        });
+        return mInfoBox;
     }
 
     private TextArea createInfoBox() {
@@ -204,24 +193,47 @@ public class StartScreen extends Scene {
         return infoBox;
     }
 
-    private VBox createInsideStoryButtons() {
-        Button enterGame = createButton("Enter Game", event -> {});
-        Button choosePlayer = createButton("Choose Player", event -> showChoosePlayerItems());
-        Button loadGame = createButton("Load Game", event -> showLoadGameItems());
-        Button changeStory = createButton("Change Story", event -> {
-            insideStoryButtons.setVisible(false);
-            chooseStoryButtons.setVisible(true);
-            showStorySelectionItems();
+    private VBox createChoosePlayerButtons() {
+        Button choosePlayer = createButton("Choose Player", event -> {
+            mainTheater.getStoryTellingScheme().setCurrentPlayer(mainTheater.getStoryTellingScheme().getPlayerList().getPlayer(infoBox2.getSelectionModel().getSelectedItem()));
+            showLoadGameItems();
         });
+        Button newPlayer = createButton("New Player", event -> {
+            Map<String, String> playerAttribs = new HashMap<>();
+            mainTheater.getStoryTellingScheme().getPlayerStructure().fillAttributes(playerAttribs, questionner);
+            mainTheater.getStoryTellingScheme().getPlayerList().addPlayer(playerAttribs);
+            showLoadGameItems();
+        });
+        Button changeStory = createButton("Change Story", event -> showStorySelectionItems());
         Button quit = createButton("Quit", event -> quitGame());
 
+        VBox insideStory = createButtonsVBox();
+
+        insideStory.getChildren().addAll(choosePlayer, newPlayer, changeStory, quit);
+        insideStory.setTranslateX(BUTTONS_X_TRANSLATE);
+        return insideStory;
+    }
+
+    private VBox createLoadGameButtons() {
+        Button changePlayer = createButton("Change Player", event -> showChoosePlayerItems());
+        Button newGame = createButton("New Game", event -> {});
+        Button loadGame = createButton("Load Game", event -> {});
+        Button saveGame = createButton("Save Game", event -> {});
+        Button changeStory = createButton("Change Story", event -> showStorySelectionItems());
+        Button quit = createButton("Quit", event -> quitGame());
+
+        VBox insideStory = createButtonsVBox();
+
+        insideStory.getChildren().addAll(changePlayer, newGame, loadGame, saveGame, changeStory, quit);
+        insideStory.setTranslateX(BUTTONS_X_TRANSLATE);
+        return insideStory;
+    }
+
+    private VBox createButtonsVBox() {
         VBox insideStory = new VBox(BUTTONS_VERTICAL_SPACING);
         Insets padding = new Insets(TOP_BUTTON_INSET, RIGHT_BUTTON_INSET, BOTTOM_BUTTON_INSET, LEFT_BUTTON_INSET);
         insideStory.setPadding(padding);
         insideStory.setAlignment(Pos.CENTER);
-
-        insideStory.getChildren().addAll(enterGame, choosePlayer, loadGame, changeStory, quit);
-        insideStory.setTranslateX(BUTTONS_X_TRANSLATE);
         return insideStory;
     }
 
@@ -230,10 +242,14 @@ public class StartScreen extends Scene {
     }
 
     private void showLoadGameItems() {
+        insideStoryButtons.setVisible(false);
+        loadGameButtons.setVisible(true);
+        chooseStoryButtons.setVisible(false);
+
         infoBox2.setVisible(true);
         infoBox2.setItems(savedGameList());
-        choosePlayerButtons.setVisible(false);
-        loadGameButtons.setVisible(true);
+        infoBox.setText("");
+        mode = Mode.LOAD;
     }
 
     private ObservableList<String> savedGameList() {
@@ -258,13 +274,16 @@ public class StartScreen extends Scene {
                 infoBox.setText("");
                 showStorySelectionItems();
             } else {
-                chooseStoryButtons.setVisible(false);
-                insideStoryButtons.setVisible(true);
+                StoryTellingScheme selected = storyList.get(infoBox2.getSelectionModel().getSelectedItem());
+                if (selected != mainTheater.getStoryTellingScheme()) {
+                    mainTheater.setStoryTellingScheme(selected);
+                    selected.setCurrentPlayer(null);
+                }
                 showChoosePlayerItems();
             }
         });
 
-        String creditsText = loadCreditText();
+        String creditsText = Utilities.readFile(CREDIT_FILE);
 
         Button credits = createButton("Credits", event -> {
             infoBox.setText(creditsText);
@@ -274,10 +293,7 @@ public class StartScreen extends Scene {
 
         Button quit = createButton("Quit", event -> quitGame());
 
-        VBox insideStory = new VBox(BUTTONS_VERTICAL_SPACING);
-        Insets padding = new Insets(TOP_BUTTON_INSET, RIGHT_BUTTON_INSET, BOTTOM_BUTTON_INSET, LEFT_BUTTON_INSET);
-        insideStory.setPadding(padding);
-        insideStory.setAlignment(Pos.CENTER);
+        VBox insideStory = createButtonsVBox();
 
         insideStory.getChildren().addAll(chooseStory, credits, quit);
         insideStory.setTranslateX(BUTTONS_X_TRANSLATE);
@@ -286,50 +302,66 @@ public class StartScreen extends Scene {
 
     private void hideMiddle() {
         infoBox2.setVisible(false);
-        choosePlayerButtons.setVisible(false);
-        loadGameButtons.setVisible(false);
     }
 
     private void showChoosePlayerItems() {
+        insideStoryButtons.setVisible(true);
+        loadGameButtons.setVisible(false);
+        chooseStoryButtons.setVisible(false);
+
+
         infoBox2.setVisible(true);
         infoBox2.setItems(playerList());
-        choosePlayerButtons.setVisible(true);
-        loadGameButtons.setVisible(false);
+        infoBox.setText("");
+
+        String selected = "";
+
+        if (mainTheater.getStoryTellingScheme().getCurrentPlayer() == null){
+            if (infoBox2.getSelectionModel().isEmpty()){
+                insideStoryButtons.getChildren().get(0).setDisable(true);
+            } else {
+                infoBox2.getSelectionModel().selectFirst();
+                selected = infoBox2.getSelectionModel().getSelectedItem();
+                insideStoryButtons.getChildren().get(0).setDisable(false);
+            }
+        } else {
+            infoBox2.getSelectionModel().select(mainTheater.getStoryTellingScheme().getCurrentPlayer().getName());
+            selected = infoBox2.getSelectionModel().getSelectedItem();
+            insideStoryButtons.getChildren().get(0).setDisable(false);
+        }
+
+        if (!selected.isEmpty()) {
+            infoBox.setText(mainTheater.getStoryTellingScheme().getPlayerList().getPlayer(selected).getDescription());
+        }
+
+        mode = Mode.PLAYER;
     }
 
     private ObservableList<String> playerList() {
-        return new ObservableListBase<>() {
-            @Override
-            public String get(int index) {
-                return "";
-            }
-
-            @Override
-            public int size() {
-                return 0;
-            }
-        };
+        return FXCollections.observableArrayList(mainTheater.getStoryTellingScheme().getPlayerList().getPlayerList());
     }
 
     private void showStorySelectionItems() {
+        insideStoryButtons.setVisible(false);
+        loadGameButtons.setVisible(false);
+        chooseStoryButtons.setVisible(true);
+
         infoBox2.setVisible(true);
         infoBox2.setItems(storyList());
-        choosePlayerButtons.setVisible(false);
-        loadGameButtons.setVisible(false);
+        if (mainTheater.getStoryTellingScheme() == null){
+            infoBox2.getSelectionModel().selectFirst();
+        } else {
+            infoBox2.getSelectionModel().select(mainTheater.getStoryTellingScheme().getStoryName());
+        }
+
+        String selected = infoBox2.getSelectionModel().getSelectedItem();
+
+        infoBox.setText(storyList.get(selected).getDescription());
+        mode = Mode.STORY;
     }
 
     private ObservableList<String> storyList() {
-        return new ObservableListBase<>() {
-            @Override
-            public String get(int index) {
-                return "";
-            }
-
-            @Override
-            public int size() {
-                return 0;
-            }
-        };
+        return FXCollections.observableArrayList(storyList.getStoryNames());
     }
 
     private GridPane createGridPane() {
@@ -376,22 +408,12 @@ public class StartScreen extends Scene {
         return btn;
     }
 
-    private String loadCreditText() {
-        StringBuilder text = new StringBuilder();
-
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(CREDIT_FILE)))) {
-            String line = reader.readLine();
-            while (line != null) {
-                text.append(line).append("\n");
-                line = reader.readLine();
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(StartScreen.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return text.toString();
+    public enum Mode {
+        STORY,
+        PLAYER,
+        LOAD,
+        ;
     }
-
 
 
 }

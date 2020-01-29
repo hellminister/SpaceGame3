@@ -20,7 +20,6 @@ public final class ImageLibrary {
     }
 
     public static Image getImage(String imagePath) {
-        System.out.println(IMAGE_LIBRARY_FILE_PATH + imagePath);
         return library.theLibrary.computeIfAbsent(imagePath, key -> new Image(library.getClass().getResourceAsStream(IMAGE_LIBRARY_FILE_PATH + key)));
     }
 
