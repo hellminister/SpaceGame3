@@ -3,7 +3,6 @@ package spacegame3.userinterface.startscreen;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableListBase;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -174,6 +173,13 @@ public class StartScreen extends Scene {
                     }
                     break;
                 case LOAD:
+                    if ((selected != null) && !selected.isEmpty()) {
+                        infoBox.setText(mainTheater.getStoryTellingScheme().getCurrentPlayer().previewFile(selected));
+                        loadGameButtons.getChildren().get(2).setDisable(false);
+                        if (mainTheater.gameStarted()){
+                            loadGameButtons.getChildren().get(4).setDisable(false);
+                        }
+                    }
                     break;
             }
         });
@@ -196,6 +202,7 @@ public class StartScreen extends Scene {
     private VBox createChoosePlayerButtons() {
         Button choosePlayer = createButton("Choose Player", event -> {
             mainTheater.getStoryTellingScheme().setCurrentPlayer(mainTheater.getStoryTellingScheme().getPlayerList().getPlayer(infoBox2.getSelectionModel().getSelectedItem()));
+            mainTheater.getStoryTellingScheme().getPlayerList().updatePlayerListFile();
             showLoadGameItems();
         });
         Button newPlayer = createButton("New Player", event -> {
@@ -218,13 +225,21 @@ public class StartScreen extends Scene {
         Button changePlayer = createButton("Change Player", event -> showChoosePlayerItems());
         Button newGame = createButton("New Game", event -> {});
         Button loadGame = createButton("Load Game", event -> {});
-        Button saveGame = createButton("Save Game", event -> {});
+        Button saveAsGame = createButton("Save Game As...", event -> {
+            String fileName = questionner.getAnswer("Save file name:");
+            fileName += ".sav";
+            mainTheater.getStoryTellingScheme().saveAs(fileName, questionner);
+        });
+        Button saveGame = createButton("Save Game", event -> {
+            String filename = infoBox2.getSelectionModel().getSelectedItem();
+            mainTheater.getStoryTellingScheme().saveAs(filename, questionner);
+        });
         Button changeStory = createButton("Change Story", event -> showStorySelectionItems());
         Button quit = createButton("Quit", event -> quitGame());
 
         VBox insideStory = createButtonsVBox();
 
-        insideStory.getChildren().addAll(changePlayer, newGame, loadGame, saveGame, changeStory, quit);
+        insideStory.getChildren().addAll(changePlayer, newGame, loadGame, saveAsGame, saveGame, changeStory, quit);
         insideStory.setTranslateX(BUTTONS_X_TRANSLATE);
         return insideStory;
     }
@@ -249,21 +264,29 @@ public class StartScreen extends Scene {
         infoBox2.setVisible(true);
         infoBox2.setItems(savedGameList());
         infoBox.setText("");
+
+        if (infoBox2.getItems().isEmpty()){
+            loadGameButtons.getChildren().get(2).setDisable(true);
+            loadGameButtons.getChildren().get(4).setDisable(true);
+        } else {
+            infoBox2.getSelectionModel().selectFirst();
+            loadGameButtons.getChildren().get(2).setDisable(false);
+            loadGameButtons.getChildren().get(4).setDisable(false);
+        }
+
+        if (mainTheater.gameStarted()){
+            loadGameButtons.getChildren().get(3).setDisable(false);
+        } else {
+            loadGameButtons.getChildren().get(3).setDisable(true);
+            loadGameButtons.getChildren().get(4).setDisable(true);
+        }
+
+
         mode = Mode.LOAD;
     }
 
     private ObservableList<String> savedGameList() {
-        return new ObservableListBase<>() {
-            @Override
-            public String get(int index) {
-                return "";
-            }
-
-            @Override
-            public int size() {
-                return 0;
-            }
-        };
+        return FXCollections.observableArrayList(mainTheater.getStoryTellingScheme().getCurrentPlayer().getSavedGameList());
     }
 
     private VBox createChooseStoryButtons() {
@@ -277,7 +300,7 @@ public class StartScreen extends Scene {
                 StoryTellingScheme selected = storyList.get(infoBox2.getSelectionModel().getSelectedItem());
                 if (selected != mainTheater.getStoryTellingScheme()) {
                     mainTheater.setStoryTellingScheme(selected);
-                    selected.setCurrentPlayer(null);
+                    //selected.setCurrentPlayer(null);
                 }
                 showChoosePlayerItems();
             }
@@ -317,7 +340,7 @@ public class StartScreen extends Scene {
         String selected = "";
 
         if (mainTheater.getStoryTellingScheme().getCurrentPlayer() == null){
-            if (infoBox2.getSelectionModel().isEmpty()){
+            if (infoBox2.getItems().isEmpty()){
                 insideStoryButtons.getChildren().get(0).setDisable(true);
             } else {
                 infoBox2.getSelectionModel().selectFirst();

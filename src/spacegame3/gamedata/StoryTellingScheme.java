@@ -1,6 +1,9 @@
 package spacegame3.gamedata;
 
 import spacegame3.gamedata.objectstructure.PlayerStructure;
+import spacegame3.userinterface.startscreen.PlayerList;
+import spacegame3.userinterface.startscreen.PlayerSaveInfo;
+import spacegame3.userinterface.startscreen.QuestionBox;
 import spacegame3.util.Utilities;
 
 import java.nio.file.Path;
@@ -62,5 +65,13 @@ public class StoryTellingScheme {
 
     public PlayerSaveInfo getCurrentPlayer(){
         return currentPlayer;
+    }
+
+    public void save(){
+        currentPlayer.save("Game State");
+    }
+
+    public void saveAs(String filename, QuestionBox question){
+        currentPlayer.saveAs(filename, "gameState", question);
     }
 }

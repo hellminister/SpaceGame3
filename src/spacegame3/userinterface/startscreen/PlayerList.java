@@ -1,5 +1,6 @@
-package spacegame3.gamedata;
+package spacegame3.userinterface.startscreen;
 
+import spacegame3.gamedata.StoryTellingScheme;
 import spacegame3.util.Utilities;
 
 import java.io.BufferedReader;
@@ -81,7 +82,7 @@ private static final Logger LOG = Logger.getLogger(PlayerList.class.getName());
         updatePlayerListFile();
     }
 
-    private void updatePlayerListFile() {
+    public void updatePlayerListFile() {
         StringBuilder sb = new StringBuilder();
 
         sb.append(nextNewPlayerNumber).append("\n");

@@ -17,9 +17,12 @@ public class SpaceGame extends Application {
 
     private StoryTellingScheme storyTellingScheme;
 
+    private boolean gameStarted;
+
     public SpaceGame() {
         startScreen = new StartScreen(this);
         storyTellingScheme = null;
+        gameStarted = false;
     }
 
     public StoryTellingScheme getStoryTellingScheme() {
@@ -47,4 +50,10 @@ public class SpaceGame extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
+    public boolean gameStarted() {
+        return gameStarted;
+    }
+
+
 }
