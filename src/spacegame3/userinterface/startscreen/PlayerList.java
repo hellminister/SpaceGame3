@@ -1,6 +1,6 @@
 package spacegame3.userinterface.startscreen;
 
-import spacegame3.gamedata.StoryTellingScheme;
+import spacegame3.gamedata.GameScheme;
 import spacegame3.util.Utilities;
 
 import java.io.BufferedReader;
@@ -21,15 +21,15 @@ private static final Logger LOG = Logger.getLogger(PlayerList.class.getName());
     private static final int PLAYER_NAME_POSITION = 1;
     private static final int CURRENT_PLAYER_MARKER_POSITION = 2;
 
-    private final StoryTellingScheme storyTellingScheme;
+    private final GameScheme gameScheme;
     private final Path savePaths;
     private Map<String, PlayerSaveInfo> playerListMap;
 
     private int nextNewPlayerNumber;
 
-    public PlayerList(StoryTellingScheme sts){
-        storyTellingScheme = sts;
-        savePaths = storyTellingScheme.getStoryPath().resolve(SAVES_DIR);
+    public PlayerList(GameScheme sts){
+        gameScheme = sts;
+        savePaths = gameScheme.getStoryPath().resolve(SAVES_DIR);
 
         nextNewPlayerNumber = 1;
         populatePlayerListMap();
@@ -54,7 +54,7 @@ private static final Logger LOG = Logger.getLogger(PlayerList.class.getName());
                         new PlayerSaveInfo(parts[PLAYER_NAME_POSITION],
                                 savePaths.resolve(parts[SAVE_FOLDER_NAME_POSITION])));
                 if (parts.length > CURRENT_PLAYER_MARKER_POSITION){
-                    storyTellingScheme.setCurrentPlayer(playerListMap.get(parts[PLAYER_NAME_POSITION]));
+                    gameScheme.setCurrentPlayer(playerListMap.get(parts[PLAYER_NAME_POSITION]));
                 }
 
                 line = reader.readLine();
@@ -74,11 +74,11 @@ private static final Logger LOG = Logger.getLogger(PlayerList.class.getName());
         String folderNumber = String.format("%03d", nextNewPlayerNumber++);
         Path savePath = savePaths.resolve(folderNumber);
         PlayerSaveInfo newPlayer = new PlayerSaveInfo(savePath,
-                storyTellingScheme.getPlayerStructure().getSaveFileName(playerAttribs),
-                storyTellingScheme.getPlayerStructure().getDescription(playerAttribs),
-                storyTellingScheme.getPlayerStructure().attribToString(playerAttribs));
+                gameScheme.getStoryTellingScheme().getPlayerStructure().getSaveFileName(playerAttribs),
+                gameScheme.getStoryTellingScheme().getPlayerStructure().getDescription(playerAttribs),
+                gameScheme.getStoryTellingScheme().getPlayerStructure().attribToString(playerAttribs));
         playerListMap.put(newPlayer.getName(), newPlayer);
-        storyTellingScheme.setCurrentPlayer(newPlayer);
+        gameScheme.setCurrentPlayer(newPlayer);
         updatePlayerListFile();
     }
 
@@ -86,7 +86,7 @@ private static final Logger LOG = Logger.getLogger(PlayerList.class.getName());
         StringBuilder sb = new StringBuilder();
 
         sb.append(nextNewPlayerNumber).append("\n");
-        PlayerSaveInfo currentPlayer = storyTellingScheme.getCurrentPlayer();
+        PlayerSaveInfo currentPlayer = gameScheme.getCurrentPlayer();
         for (PlayerSaveInfo psi : playerListMap.values()){
             sb.append(psi.getFolderNumber()).append(" \"").append(psi.getName()).append("\"");
             if (psi == currentPlayer) {

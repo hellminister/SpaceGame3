@@ -1,6 +1,6 @@
 package spacegame3.userinterface.startscreen;
 
-import spacegame3.gamedata.StoryTellingScheme;
+import spacegame3.gamedata.GameScheme;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -18,15 +18,15 @@ public class StoryList {
     private static final Logger LOG = Logger.getLogger(StoryList.class.getName());
     private static final Path STORIES_HEAD = Paths.get("src/resources/stories");
 
-    private Map<String, StoryTellingScheme> stories;
+    private Map<String, GameScheme> stories;
 
     public StoryList(){
 
         try (Stream<Path> walk = Files.walk(STORIES_HEAD, 1)){
             stories = walk.filter(Files::isDirectory)
                     .skip(1)
-                    .map(q -> new StoryTellingScheme(q))
-                    .collect(Collectors.toMap(StoryTellingScheme::getStoryName, Function.identity()));
+                    .map(q -> new GameScheme(q))
+                    .collect(Collectors.toMap(GameScheme::getStoryName, Function.identity()));
         } catch (IOException e) {
             LOG.severe(e::toString);
         }
@@ -36,7 +36,7 @@ public class StoryList {
         return Collections.unmodifiableSet(stories.keySet());
     }
 
-    public StoryTellingScheme get(String selected) {
+    public GameScheme get(String selected) {
         return stories.get(selected);
     }
 }

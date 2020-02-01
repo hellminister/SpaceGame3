@@ -16,14 +16,12 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import spacegame3.SpaceGame;
-import spacegame3.gamedata.StoryTellingScheme;
+import spacegame3.gamedata.GameScheme;
 import spacegame3.userinterface.ImageLibrary;
 import spacegame3.util.Utilities;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 public class StartScreen extends Scene {
@@ -168,13 +166,13 @@ public class StartScreen extends Scene {
                     break;
                 case PLAYER:
                     if ((selected != null) && !selected.isEmpty()) {
-                        infoBox.setText(mainTheater.getStoryTellingScheme().getPlayerList().getPlayer(selected).getDescription());
+                        infoBox.setText(mainTheater.getGameScheme().getPlayerList().getPlayer(selected).getDescription());
                         insideStoryButtons.getChildren().get(0).setDisable(false);
                     }
                     break;
                 case LOAD:
                     if ((selected != null) && !selected.isEmpty()) {
-                        infoBox.setText(mainTheater.getStoryTellingScheme().getCurrentPlayer().previewFile(selected));
+                        infoBox.setText(mainTheater.getGameScheme().getCurrentPlayer().previewFile(selected));
                         loadGameButtons.getChildren().get(2).setDisable(false);
                         if (mainTheater.gameStarted()){
                             loadGameButtons.getChildren().get(4).setDisable(false);
@@ -201,14 +199,12 @@ public class StartScreen extends Scene {
 
     private VBox createChoosePlayerButtons() {
         Button choosePlayer = createButton("Choose Player", event -> {
-            mainTheater.getStoryTellingScheme().setCurrentPlayer(mainTheater.getStoryTellingScheme().getPlayerList().getPlayer(infoBox2.getSelectionModel().getSelectedItem()));
-            mainTheater.getStoryTellingScheme().getPlayerList().updatePlayerListFile();
+            mainTheater.getGameScheme().setCurrentPlayer(mainTheater.getGameScheme().getPlayerList().getPlayer(infoBox2.getSelectionModel().getSelectedItem()));
+            mainTheater.getGameScheme().getPlayerList().updatePlayerListFile();
             showLoadGameItems();
         });
         Button newPlayer = createButton("New Player", event -> {
-            Map<String, String> playerAttribs = new HashMap<>();
-            mainTheater.getStoryTellingScheme().getPlayerStructure().fillAttributes(playerAttribs, questionner);
-            mainTheater.getStoryTellingScheme().getPlayerList().addPlayer(playerAttribs);
+            mainTheater.getGameScheme().createNewPlayer(questionner);
             showLoadGameItems();
         });
         Button changeStory = createButton("Change Story", event -> showStorySelectionItems());
@@ -228,11 +224,11 @@ public class StartScreen extends Scene {
         Button saveAsGame = createButton("Save Game As...", event -> {
             String fileName = questionner.getAnswer("Save file name:");
             fileName += ".sav";
-            mainTheater.getStoryTellingScheme().saveAs(fileName, questionner);
+            mainTheater.getGameScheme().saveAs(fileName, questionner);
         });
         Button saveGame = createButton("Save Game", event -> {
             String filename = infoBox2.getSelectionModel().getSelectedItem();
-            mainTheater.getStoryTellingScheme().saveAs(filename, questionner);
+            mainTheater.getGameScheme().saveAs(filename, questionner);
         });
         Button changeStory = createButton("Change Story", event -> showStorySelectionItems());
         Button quit = createButton("Quit", event -> quitGame());
@@ -286,7 +282,7 @@ public class StartScreen extends Scene {
     }
 
     private ObservableList<String> savedGameList() {
-        return FXCollections.observableArrayList(mainTheater.getStoryTellingScheme().getCurrentPlayer().getSavedGameList());
+        return FXCollections.observableArrayList(mainTheater.getGameScheme().getCurrentPlayer().getSavedGameList());
     }
 
     private VBox createChooseStoryButtons() {
@@ -297,9 +293,9 @@ public class StartScreen extends Scene {
                 infoBox.setText("");
                 showStorySelectionItems();
             } else {
-                StoryTellingScheme selected = storyList.get(infoBox2.getSelectionModel().getSelectedItem());
-                if (selected != mainTheater.getStoryTellingScheme()) {
-                    mainTheater.setStoryTellingScheme(selected);
+                GameScheme selected = storyList.get(infoBox2.getSelectionModel().getSelectedItem());
+                if (selected != mainTheater.getGameScheme()) {
+                    mainTheater.setGameScheme(selected);
                     //selected.setCurrentPlayer(null);
                 }
                 showChoosePlayerItems();
@@ -339,7 +335,7 @@ public class StartScreen extends Scene {
 
         String selected = "";
 
-        if (mainTheater.getStoryTellingScheme().getCurrentPlayer() == null){
+        if (mainTheater.getGameScheme().getCurrentPlayer() == null){
             if (infoBox2.getItems().isEmpty()){
                 insideStoryButtons.getChildren().get(0).setDisable(true);
             } else {
@@ -348,20 +344,20 @@ public class StartScreen extends Scene {
                 insideStoryButtons.getChildren().get(0).setDisable(false);
             }
         } else {
-            infoBox2.getSelectionModel().select(mainTheater.getStoryTellingScheme().getCurrentPlayer().getName());
+            infoBox2.getSelectionModel().select(mainTheater.getGameScheme().getCurrentPlayer().getName());
             selected = infoBox2.getSelectionModel().getSelectedItem();
             insideStoryButtons.getChildren().get(0).setDisable(false);
         }
 
         if (!selected.isEmpty()) {
-            infoBox.setText(mainTheater.getStoryTellingScheme().getPlayerList().getPlayer(selected).getDescription());
+            infoBox.setText(mainTheater.getGameScheme().getPlayerList().getPlayer(selected).getDescription());
         }
 
         mode = Mode.PLAYER;
     }
 
     private ObservableList<String> playerList() {
-        return FXCollections.observableArrayList(mainTheater.getStoryTellingScheme().getPlayerList().getPlayerList());
+        return FXCollections.observableArrayList(mainTheater.getGameScheme().getPlayerList().getPlayerList());
     }
 
     private void showStorySelectionItems() {
@@ -371,10 +367,10 @@ public class StartScreen extends Scene {
 
         infoBox2.setVisible(true);
         infoBox2.setItems(storyList());
-        if (mainTheater.getStoryTellingScheme() == null){
+        if (mainTheater.getGameScheme() == null){
             infoBox2.getSelectionModel().selectFirst();
         } else {
-            infoBox2.getSelectionModel().select(mainTheater.getStoryTellingScheme().getStoryName());
+            infoBox2.getSelectionModel().select(mainTheater.getGameScheme().getStoryName());
         }
 
         String selected = infoBox2.getSelectionModel().getSelectedItem();

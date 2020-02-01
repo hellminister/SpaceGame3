@@ -2,7 +2,7 @@ package spacegame3;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import spacegame3.gamedata.StoryTellingScheme;
+import spacegame3.gamedata.GameScheme;
 import spacegame3.userinterface.startscreen.StartScreen;
 
 import java.util.logging.Logger;
@@ -15,22 +15,22 @@ public class SpaceGame extends Application {
 
     private Stage stage;
 
-    private StoryTellingScheme storyTellingScheme;
+    private GameScheme gameScheme;
 
     private boolean gameStarted;
 
     public SpaceGame() {
         startScreen = new StartScreen(this);
-        storyTellingScheme = null;
+        gameScheme = null;
         gameStarted = false;
     }
 
-    public StoryTellingScheme getStoryTellingScheme() {
-        return storyTellingScheme;
+    public GameScheme getGameScheme() {
+        return gameScheme;
     }
 
-    public void setStoryTellingScheme(StoryTellingScheme storyTellingScheme) {
-        this.storyTellingScheme = storyTellingScheme;
+    public void setGameScheme(GameScheme gameScheme) {
+        this.gameScheme = gameScheme;
     }
 
     @Override
