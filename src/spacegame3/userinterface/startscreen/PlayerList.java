@@ -76,7 +76,7 @@ private static final Logger LOG = Logger.getLogger(PlayerList.class.getName());
         PlayerSaveInfo newPlayer = new PlayerSaveInfo(savePath,
                 storyTellingScheme.getPlayerStructure().getSaveFileName(playerAttribs),
                 storyTellingScheme.getPlayerStructure().getDescription(playerAttribs),
-                storyTellingScheme.getPlayerStructure().toString(playerAttribs));
+                storyTellingScheme.getPlayerStructure().attribToString(playerAttribs));
         playerListMap.put(newPlayer.getName(), newPlayer);
         storyTellingScheme.setCurrentPlayer(newPlayer);
         updatePlayerListFile();

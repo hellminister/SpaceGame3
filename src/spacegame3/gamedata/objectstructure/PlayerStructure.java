@@ -105,11 +105,9 @@ public final class PlayerStructure {
         return buildString(attribs, description);
     }
 
-    public String toString(Map<String, String> attribs){
+    public String attribToString(Map<String, String> attribs){
         StringBuilder sb = new StringBuilder();
-        attribs.forEach((key, value) -> {
-            sb.append("\"").append(key).append("\" \"").append(value).append("\"\n");
-        });
+        attribs.forEach((key, value) -> sb.append("\"").append(key).append("\" \"").append(value).append("\"\n"));
         return sb.toString();
     }
 
