@@ -1,7 +1,9 @@
 package spacegame3.userinterface.startscreen;
 
+import spacegame3.gamedata.GameState;
 import spacegame3.util.Utilities;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.*;
@@ -87,16 +89,16 @@ public class PlayerSaveInfo {
         return sb.toString();
     }
 
-    public void save(String gameState) {
+    public void save(GameState gameState) {
         doBackUps(PREVIOUS_SAVE_2, PREVIOUS_SAVE_3);
         doBackUps(PREVIOUS_SAVE_1, PREVIOUS_SAVE_2);
         doBackUps(RECENT_SAVE, PREVIOUS_SAVE_1);
         save(RECENT_SAVE, gameState, StandardOpenOption.CREATE);
     }
 
-    public boolean save(String filename, String gameState, StandardOpenOption... soo){
+    public boolean save(String filename, GameState gameState, StandardOpenOption... soo){
         try (BufferedWriter bw = Files.newBufferedWriter(saveFolder.resolve(filename), soo)){
-            bw.write(gameState);
+            bw.write(gameState.toSaveState());
             bw.flush();
             return true;
         } catch (IOException e) {
@@ -119,7 +121,7 @@ public class PlayerSaveInfo {
     }
 
     private static final Set<String> saveAsAnswer = Set.of("Yes", "No");
-    public void saveAs(String filename, String gameState, QuestionBox question) {
+    public void saveAs(String filename, GameState gameState, QuestionBox question) {
         boolean success = save(filename, gameState, StandardOpenOption.CREATE_NEW);
         if (!success) {
             String answer = question.getAnswer("File already exists; Overwrite?", saveAsAnswer);
@@ -127,5 +129,25 @@ public class PlayerSaveInfo {
                 save(filename,gameState, StandardOpenOption.CREATE);
             }
         }
+    }
+
+    public Map<String, String> loadPlayerAttribs() {
+        Map<String, String> attribs = new LinkedHashMap<>();
+
+        try (BufferedReader reader = Files.newBufferedReader(saveFolder.resolve(ATTRIBUTE_FILE))) {
+            String line = reader.readLine();
+            while (line != null){
+                String[] data = line.split("\" \"");
+
+                attribs.put(data[0].replaceAll("\"", ""), data[1].replaceAll("\"", ""));
+
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            LOG.severe(e::toString);
+        }
+
+        return attribs;
+
     }
 }

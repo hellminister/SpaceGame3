@@ -3,17 +3,37 @@ package spacegame3;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import spacegame3.gamedata.GameScheme;
+import spacegame3.userinterface.SizableScene;
+import spacegame3.userinterface.planetscreen.PlanetScreen;
 import spacegame3.userinterface.startscreen.StartScreen;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 public class SpaceGame extends Application {
     private static final Logger LOG = Logger.getLogger(SpaceGame.class.getName());
 
+    static {
+        Path logConfigFile = Paths.get("src/resources/commons/logging.properties");
+        LOG.info(() -> logConfigFile.toAbsolutePath().toString());
+        System.setProperty("java.util.logging.config.file", logConfigFile.toAbsolutePath().toString());
+        try {
+            LogManager.getLogManager().readConfiguration();
+        } catch (IOException e) {
+            LOG.info(e::toString);
+        }
+    }
+
 
     private final StartScreen startScreen;
+    private final PlanetScreen planetScreen;
 
     private Stage stage;
+
+    private SizableScene previousScene = null;
 
     private GameScheme gameScheme;
 
@@ -21,6 +41,7 @@ public class SpaceGame extends Application {
 
     public SpaceGame() {
         startScreen = new StartScreen(this);
+        planetScreen = new PlanetScreen(this);
         gameScheme = null;
         gameStarted = false;
     }
@@ -45,6 +66,14 @@ public class SpaceGame extends Application {
 
         stage.setMinHeight(primaryStage.getHeight());
         stage.setMinWidth(primaryStage.getWidth());
+
+        planetScreen.setSize(stage.getWidth(), stage.getHeight());
+    }
+
+    public void giveSceneTo(SizableScene scene){
+        scene.setSize(stage.getWidth(), stage.getHeight());
+        scene.refresh();
+        stage.setScene(scene);
     }
 
     public static void main(String[] args) {
@@ -55,5 +84,18 @@ public class SpaceGame extends Application {
         return gameStarted;
     }
 
+
+    public SizableScene getPlanetScreen() {
+        return planetScreen;
+    }
+
+    public void showStartScreen(SizableScene scene) {
+        previousScene = scene;
+        giveSceneTo(startScreen);
+    }
+
+    public SizableScene previousScene(){
+        return previousScene;
+    }
 
 }

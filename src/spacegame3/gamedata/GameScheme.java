@@ -14,10 +14,10 @@ public class GameScheme {
 
     private final StoryTellingScheme storyTellingScheme;
 
-
     private PlayerList playerList;
     private PlayerSaveInfo currentPlayer;
 
+    public GameState gameState;
 
     public GameScheme(Path resourcesPath) {
         storyTellingScheme = new StoryTellingScheme(resourcesPath);
@@ -40,11 +40,11 @@ public class GameScheme {
     }
 
     public void save(){
-        currentPlayer.save("Game State");
+        currentPlayer.save(gameState);
     }
 
     public void saveAs(String filename, QuestionBox question){
-        currentPlayer.saveAs(filename, "gameState", question);
+        currentPlayer.saveAs(filename, gameState, question);
     }
 
     public String getStoryName() {
@@ -67,5 +67,9 @@ public class GameScheme {
 
     public StoryTellingScheme getStoryTellingScheme(){
         return storyTellingScheme;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
     }
 }

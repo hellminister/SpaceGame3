@@ -7,10 +7,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.util.logging.Logger.getLogger;
+
 public final class PlayerStructure {
+    private static final Logger LOG = getLogger(PlayerStructure.class.getName());
 
     private static final String PLAYER_STRUCTURE_URL = "data/objectstructure/PlayerStructure.txt";
 
@@ -23,8 +25,7 @@ public final class PlayerStructure {
 
     public PlayerStructure (Path storyPath) {
         Path structurePath = storyPath.resolve(PLAYER_STRUCTURE_URL);
-        System.out.println(structurePath.toString());
-        System.out.println(storyPath.toString());
+
         var temp_playerStringAttribute = new LinkedHashMap<String, String>();
         var temp_attributeValue = new HashMap<String, Set<String>>();
         var temp_linkedAttributeValue = new HashMap<String, Map<String, Set<String>>>();
@@ -41,20 +42,23 @@ public final class PlayerStructure {
             int size = 0;
 
             while (line != null) {
-                words = line.split(" ");
+                words = line.split(" ?\" ?\"?");
+
+                String[] finalWords = words;
+                LOG.fine(() -> Arrays.toString(finalWords));
 
                 switch (words[0]){
                     case "s":
-                        msg = String.join(" ", Arrays.copyOfRange(words, 2, words.length));
+                        msg = words[2];
                         temp_playerStringAttribute.put(words[1], msg);
                         break;
                     case "l":
-                        msg = String.join(" ", Arrays.copyOfRange(words, 3, words.length));
+                        msg = words[3];
                         temp_playerStringAttribute.put(words[1], msg);
                         temp_attributeValue.put(words[1], Set.of(words[2].split("#")));
                         break;
                     case "m":
-                        msg = String.join(" ", Arrays.copyOfRange(words, 3, words.length));
+                        msg = words[3];
                         temp_playerStringAttribute.put(words[1], msg);
                         temp_linkedAttribute.put(words[1], words[2]);
                         temp_linkedAttributeValue.put(words[1], new HashMap<>());
@@ -80,13 +84,13 @@ public final class PlayerStructure {
                                 size = 0;
                             }
                         } else {
-                            Logger.getLogger(PlayerStructure.class.getName()).log(Level.WARNING, words[0] + " is untreated.");
+                            LOG.warning(words[0] + " is untreated.");
                         }
                 }
                 line = reader.readLine();
             }
         } catch (IOException ex) {
-            Logger.getLogger(PlayerStructure.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.severe(ex::toString);
         }
 
         playerStringAttribute = Collections.unmodifiableMap(temp_playerStringAttribute);

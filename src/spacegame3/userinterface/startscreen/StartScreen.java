@@ -17,14 +17,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import spacegame3.SpaceGame;
 import spacegame3.gamedata.GameScheme;
+import spacegame3.gamedata.GameState;
+import spacegame3.gamedata.player.Player;
 import spacegame3.userinterface.ImageLibrary;
+import spacegame3.userinterface.SizableScene;
 import spacegame3.util.Utilities;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Logger;
 
-public class StartScreen extends Scene {
+public class StartScreen extends SizableScene {
     private static final Logger LOG = Logger.getLogger(StartScreen.class.getName());
 
     private static final int HEIGHT = 480;
@@ -65,7 +68,6 @@ public class StartScreen extends Scene {
     private static final int MIDDLE_INFO_BOX_MIN_WIDTH = 200;
 
 
-    private final SpaceGame mainTheater;
     private final Pane insideStoryButtons;
     private final Pane chooseStoryButtons;
     private final Pane loadGameButtons;
@@ -78,9 +80,8 @@ public class StartScreen extends Scene {
     private final QuestionBox questionner;
 
     public StartScreen(SpaceGame spaceGame) {
-        super(new StackPane());
+        super(new StackPane(), spaceGame);
         questionner = new QuestionBox();
-        mainTheater = spaceGame;
 
         storyList = new StoryList();
 
@@ -147,6 +148,19 @@ public class StartScreen extends Scene {
 
 
         root.getChildren().add(createCenteringPanesFor(mainPane));
+
+
+        setOnKeyReleased(event -> {
+            switch (event.getCode()){
+                case ESCAPE:
+                    var previous = spaceGame.previousScene();
+                    if (previous != null){
+                        spaceGame.giveSceneTo(previous);
+                    }
+            }
+                }
+        );
+
     }
 
     private ListView<String> createMiddleInfoBox() {
@@ -218,8 +232,13 @@ public class StartScreen extends Scene {
     }
 
     private VBox createLoadGameButtons() {
+        Button resume = createButton("Resume Game", event -> {mainTheater.giveSceneTo(mainTheater.previousScene());});
         Button changePlayer = createButton("Change Player", event -> showChoosePlayerItems());
-        Button newGame = createButton("New Game", event -> {});
+        Button newGame = createButton("New Game", event -> {
+            Player player = new Player(mainTheater.getGameScheme().getCurrentPlayer().loadPlayerAttribs());
+            mainTheater.getGameScheme().setGameState(new GameState(player));
+            mainTheater.giveSceneTo(mainTheater.getPlanetScreen());
+        });
         Button loadGame = createButton("Load Game", event -> {});
         Button saveAsGame = createButton("Save Game As...", event -> {
             String fileName = questionner.getAnswer("Save file name:");
@@ -235,7 +254,8 @@ public class StartScreen extends Scene {
 
         VBox insideStory = createButtonsVBox();
 
-        insideStory.getChildren().addAll(changePlayer, newGame, loadGame, saveAsGame, saveGame, changeStory, quit);
+        insideStory.getChildren().addAll(resume, changePlayer, newGame, loadGame, saveAsGame, saveGame, changeStory,
+                quit);
         insideStory.setTranslateX(BUTTONS_X_TRANSLATE);
         return insideStory;
     }
@@ -262,19 +282,26 @@ public class StartScreen extends Scene {
         infoBox.setText("");
 
         if (infoBox2.getItems().isEmpty()){
-            loadGameButtons.getChildren().get(2).setDisable(true);
-            loadGameButtons.getChildren().get(4).setDisable(true);
+            loadGameButtons.getChildren().get(3).setDisable(true);
+            loadGameButtons.getChildren().get(5).setDisable(true);
         } else {
             infoBox2.getSelectionModel().selectFirst();
-            loadGameButtons.getChildren().get(2).setDisable(false);
-            loadGameButtons.getChildren().get(4).setDisable(false);
+            loadGameButtons.getChildren().get(3).setDisable(false);
+            loadGameButtons.getChildren().get(5).setDisable(false);
         }
 
         if (mainTheater.gameStarted()){
-            loadGameButtons.getChildren().get(3).setDisable(false);
+            loadGameButtons.getChildren().get(4).setDisable(false);
         } else {
-            loadGameButtons.getChildren().get(3).setDisable(true);
             loadGameButtons.getChildren().get(4).setDisable(true);
+            loadGameButtons.getChildren().get(5).setDisable(true);
+        }
+
+        if (mainTheater.previousScene() == null){
+            loadGameButtons.getChildren().get(0).setDisable(true);
+        } else {
+            loadGameButtons.getChildren().get(0).setDisable(false);
+
         }
 
 
@@ -425,6 +452,15 @@ public class StartScreen extends Scene {
         btn.setOnAction(action);
 
         return btn;
+    }
+
+    @Override
+    public void refresh() {
+        switch (mode){
+            case STORY -> showStorySelectionItems();
+            case PLAYER -> showChoosePlayerItems();
+            case LOAD -> showLoadGameItems();
+        }
     }
 
     public enum Mode {
