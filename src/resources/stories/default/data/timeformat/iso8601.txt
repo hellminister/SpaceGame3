@@ -1,0 +1,6 @@
+FORMAT date_time_read "dd-MM-yyyy HH:mm:ss"
+FORMAT date_read "dd-MM-yyyy"
+FORMAT date_time_show "dd-MMM-yyyy HH:mm"
+FORMAT date_show "dd-MMM-yyyy"
+FORMAT time_show "HH:mm"
+START "01-01-3000 12:00:00"
