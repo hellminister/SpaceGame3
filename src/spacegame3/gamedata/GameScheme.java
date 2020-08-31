@@ -1,5 +1,7 @@
 package spacegame3.gamedata;
 
+import spacegame3.gamedata.player.Player;
+import spacegame3.gamedata.systems.CelestialBody;
 import spacegame3.userinterface.startscreen.PlayerList;
 import spacegame3.userinterface.startscreen.PlayerSaveInfo;
 import spacegame3.userinterface.startscreen.QuestionBox;
@@ -17,7 +19,7 @@ public class GameScheme {
     private PlayerList playerList;
     private PlayerSaveInfo currentPlayer;
 
-    public GameState gameState;
+    private GameState gameState;
 
     public GameScheme(Path resourcesPath) {
         storyTellingScheme = new StoryTellingScheme(resourcesPath);
@@ -71,5 +73,17 @@ public class GameScheme {
 
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
+        gameState.setGameScheme(this);
+    }
+
+    public void newGameState(Player player) {
+        gameState = new GameState(player);
+        gameState.setGameScheme(this);
+
+        storyTellingScheme.startState(gameState);
+    }
+
+    public GameState getGameState() {
+        return gameState;
     }
 }

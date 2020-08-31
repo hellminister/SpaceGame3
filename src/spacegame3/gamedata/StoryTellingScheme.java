@@ -1,20 +1,29 @@
 package spacegame3.gamedata;
 
 import spacegame3.gamedata.objectstructure.PlayerStructure;
+import spacegame3.gamedata.systems.Universe;
 import spacegame3.gamedata.time.StarDateFormatter;
 import spacegame3.util.Utilities;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class StoryTellingScheme {
+    private static final Logger LOG = Logger.getLogger(StoryTellingScheme.class.getName());
+
     private static final String DESCRIPTION_FILE = "info.txt";
+    private static final String START_FILE = "data/start.txt";
 
     private final Path resourcesPath;
     private String description;
     private final String storyName;
     private PlayerStructure playerStructure;
+    private Universe universe;
     private final Map<String, StarDateFormatter> timeFormatters;
 
     public StoryTellingScheme(Path resourcesPath) {
@@ -41,6 +50,13 @@ public class StoryTellingScheme {
         return playerStructure;
     }
 
+    public Universe getUniverse(){
+        if (universe == null){
+            universe = new Universe(resourcesPath);
+        }
+        return universe;
+    }
+
     public String getDescription() {
         if (description == null){
             description = Utilities.readFile(resourcesPath.resolve(DESCRIPTION_FILE));
@@ -54,5 +70,23 @@ public class StoryTellingScheme {
 
     public Path getStoryPath() {
         return resourcesPath;
+    }
+
+    public void startState(GameState gameState) {
+        try (BufferedReader br = Files.newBufferedReader(resourcesPath.resolve(START_FILE))){
+            String line = br.readLine();
+
+            while (line != null){
+                String[] split = line.split(":");
+                switch (split[0]){
+                    case "InSystem" -> gameState.setSystem(getUniverse().getStarSystem(split[1]));
+                    case "OnPlanet" -> gameState.setPlanet(split[1]);
+                }
+                line = br.readLine();
+            }
+
+        } catch (IOException e) {
+            LOG.severe(() -> "Problem while loading start.txt file : " + e.toString());
+        }
     }
 }

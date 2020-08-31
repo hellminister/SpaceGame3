@@ -236,8 +236,8 @@ public class StartScreen extends SizableScene {
         Button changePlayer = createButton("Change Player", event -> showChoosePlayerItems());
         Button newGame = createButton("New Game", event -> {
             Player player = new Player(mainTheater.getGameScheme().getCurrentPlayer().loadPlayerAttribs());
-            mainTheater.getGameScheme().setGameState(new GameState(player));
-            mainTheater.giveSceneTo(mainTheater.getPlanetScreen());
+            mainTheater.getGameScheme().newGameState(player);
+            mainTheater.sendToRightScene();
         });
         Button loadGame = createButton("Load Game", event -> {});
         Button saveAsGame = createButton("Save Game As...", event -> {

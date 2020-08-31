@@ -3,6 +3,8 @@ package spacegame3;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import spacegame3.gamedata.GameScheme;
+import spacegame3.gamedata.systems.CelestialBody;
+import spacegame3.gamedata.systems.StarSystem;
 import spacegame3.userinterface.SizableScene;
 import spacegame3.userinterface.planetscreen.PlanetScreen;
 import spacegame3.userinterface.startscreen.StartScreen;
@@ -85,7 +87,8 @@ public class SpaceGame extends Application {
     }
 
 
-    public SizableScene getPlanetScreen() {
+    public SizableScene getPlanetScreen(CelestialBody planet) {
+        planetScreen.setCelectialBody(planet);
         return planetScreen;
     }
 
@@ -98,4 +101,13 @@ public class SpaceGame extends Application {
         return previousScene;
     }
 
+    public void sendToRightScene() {
+        CelestialBody cb = gameScheme.getGameState().getPlanet();
+        if (cb != null){
+            giveSceneTo(getPlanetScreen(cb));
+        } else {
+            StarSystem ss = gameScheme.getGameState().getStarSystem();
+            // TODO once the scene is created
+        }
+    }
 }
