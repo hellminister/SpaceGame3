@@ -1,5 +1,6 @@
 package spacegame3.gamedata;
 
+import spacegame3.gamedata.objectstructure.CelestialBodyStructure;
 import spacegame3.gamedata.objectstructure.PlayerStructure;
 import spacegame3.gamedata.systems.Universe;
 import spacegame3.gamedata.time.StarDateFormatter;
@@ -25,6 +26,7 @@ public class StoryTellingScheme {
     private PlayerStructure playerStructure;
     private Universe universe;
     private final Map<String, StarDateFormatter> timeFormatters;
+    private CelestialBodyStructure celestialBodyStructure;
 
     public StoryTellingScheme(Path resourcesPath) {
         this.resourcesPath = resourcesPath;
@@ -50,9 +52,16 @@ public class StoryTellingScheme {
         return playerStructure;
     }
 
+    public CelestialBodyStructure getCelestialBodyStructure(){
+        if (celestialBodyStructure == null){
+            celestialBodyStructure = new CelestialBodyStructure(resourcesPath);
+        }
+        return celestialBodyStructure;
+    }
+
     public Universe getUniverse(){
         if (universe == null){
-            universe = new Universe(resourcesPath);
+            universe = new Universe(this);
         }
         return universe;
     }

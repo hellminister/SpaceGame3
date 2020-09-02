@@ -1,7 +1,9 @@
 package spacegame3.gamedata.systems;
 
+import spacegame3.gamedata.objectstructure.CelestialBodyStructure;
 import spacegame3.gamedata.systems.tabdata.TabRecord;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -15,9 +17,12 @@ public class CelestialBody extends StellarObject{
 
     protected final List<TabRecord> tabInfo;
 
-    public CelestialBody(String name, Map<String, List<String>> data) {
+    protected final Map<String, String> properties;
+
+    public CelestialBody(String name, Map<String, List<String>> data, CelestialBodyStructure cbs) {
         super(name);
         tabInfo = new LinkedList<>();
+        properties = new HashMap<>();
 
         List<String> systemData = data.get(name);
         if (systemData != null && !systemData.isEmpty()) {
@@ -34,7 +39,12 @@ public class CelestialBody extends StellarObject{
 
                         break;
                     default:
-                        LOG.warning(() -> prop[PROP_NAME_POSITION] + " is not treated " + propraw);
+                        if (cbs.validateValue(prop[PROP_NAME_POSITION], prop[PROP_VALUE_POSITION])){
+                            properties.put(prop[PROP_NAME_POSITION], prop[PROP_VALUE_POSITION]);
+                        } else {
+                            LOG.warning(() -> prop[PROP_NAME_POSITION] + " " + prop[PROP_VALUE_POSITION] + " is not " +
+                                    "treated " + propraw);
+                        }
                 }
             }
         }
@@ -47,5 +57,9 @@ public class CelestialBody extends StellarObject{
 
     public List<TabRecord> getTabs() {
         return tabInfo;
+    }
+
+    public String getAttribValue(String attrib){
+        return "name".equals(attrib) ? getName() : properties.get(attrib);
     }
 }

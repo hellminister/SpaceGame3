@@ -1,0 +1,8 @@
+TopBar
+0,0
+"Currently on %s %s of %s" "cb:type cb:name ss:name"
+1,0
+""
+2,0
+"Stardate - %s" "stardate:iso8601|date_time_show:update"
+BottomBar

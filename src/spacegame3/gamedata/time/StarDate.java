@@ -1,10 +1,11 @@
 package spacegame3.gamedata.time;
 
+import javafx.beans.binding.StringBinding;
 import javafx.beans.property.*;
 
 public class StarDate {
 
-    private LongProperty time;
+    private final LongProperty time;
     private boolean hasChanged;
 
     public StarDate() {
@@ -39,5 +40,28 @@ public class StarDate {
 
     public long getTime(){
         return time.get();
+    }
+
+    public StringBinding toString(StarDateFormatter sdf, String format){
+        return new StarDateStringBinding(sdf, format, this);
+    }
+
+    private static class StarDateStringBinding extends StringBinding{
+
+        private final StarDateFormatter sdf;
+        private final String format;
+        private final StarDate starDate;
+
+        public StarDateStringBinding(StarDateFormatter sdf, String format, StarDate starDate) {
+            this.bind(starDate.timeProperty());
+            this.sdf = sdf;
+            this.format = format;
+            this.starDate = starDate;
+        }
+
+        @Override
+        protected String computeValue() {
+            return sdf.toString(starDate, format);
+        }
     }
 }

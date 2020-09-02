@@ -1,5 +1,7 @@
 package spacegame3.gamedata.systems;
 
+import spacegame3.gamedata.StoryTellingScheme;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,12 +17,12 @@ public class Universe {
     private static final String systemsPath = "data/systems/";
     private static final int ID_POSITION = 0;
 
-    private final Path storyPath;
+    private final StoryTellingScheme story;
 
     private final Map<String, StarSystem> universe;
 
-    public Universe(Path storyPath) {
-        this.storyPath = storyPath;
+    public Universe(StoryTellingScheme story) {
+        this.story = story;
         universe = new HashMap<>();
     }
 
@@ -29,7 +31,7 @@ public class Universe {
     }
 
     private StarSystem loadStarSystem(String name) {
-        Path systemPath = storyPath.resolve(systemsPath + name + ".txt");
+        Path systemPath = story.getStoryPath().resolve(systemsPath + name + ".txt");
 
         StarSystem ss = null;
 
@@ -54,7 +56,7 @@ public class Universe {
                 line = read.readLine();
             }
 
-            ss = new StarSystem(data);
+            ss = new StarSystem(data, story.getCelestialBodyStructure());
 
 
         } catch (IOException e) {

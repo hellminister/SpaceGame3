@@ -1,6 +1,5 @@
 package spacegame3.userinterface;
 
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import spacegame3.SpaceGame;

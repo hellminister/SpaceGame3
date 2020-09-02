@@ -16,7 +16,7 @@ public class SpaceportTabRecord implements TabRecord{
             String[] prop = s.split("\\|");
             switch (prop[0]){
                 case "name" -> name = prop[1];
-                case "tab" -> name = name;
+                case "tab" -> { /* do nothing, it was already treated*/ }
                 default -> LOG.warning(() -> prop[0] + " not treated " + Arrays.toString(prop));
             }
         }

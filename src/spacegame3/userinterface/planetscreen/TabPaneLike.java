@@ -2,12 +2,12 @@ package spacegame3.userinterface.planetscreen;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import spacegame3.gamedata.systems.tabdata.TabRecord;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -21,11 +21,11 @@ public class TabPaneLike extends Pane {
     private static final int BUTTON_PREF_WIDTH = 150;
     private static final int BUTTON_MIN_WIDTH = 150;
 
-    private BorderPane bp;
-    private VBox nameTab;
-    private StackPane tabContent;
+    private final BorderPane bp;
+    private final VBox nameTab;
+    private final StackPane tabContent;
 
-    private List<TabLike> tabs;
+    private final List<TabLike<? extends TabRecord>> tabs;
 
     public TabPaneLike(){
         bp = new BorderPane();
@@ -64,7 +64,7 @@ public class TabPaneLike extends Pane {
         bp.setTop(top);
     }
 
-    public void add(TabLike tab){
+    public void add(TabLike<? extends TabRecord> tab){
         Button btn = createButton(tab.getName());
 
         tab.setVisible(tabs.isEmpty());
@@ -88,7 +88,7 @@ public class TabPaneLike extends Pane {
     }
 
     private class Action implements EventHandler<ActionEvent> {
-        private String name;
+        private final String name;
 
         public Action(String name) {
             this.name = name;

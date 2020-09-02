@@ -9,7 +9,6 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
@@ -17,7 +16,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import spacegame3.SpaceGame;
 import spacegame3.gamedata.GameScheme;
-import spacegame3.gamedata.GameState;
 import spacegame3.gamedata.player.Player;
 import spacegame3.userinterface.ImageLibrary;
 import spacegame3.userinterface.SizableScene;
@@ -232,7 +230,7 @@ public class StartScreen extends SizableScene {
     }
 
     private VBox createLoadGameButtons() {
-        Button resume = createButton("Resume Game", event -> {mainTheater.giveSceneTo(mainTheater.previousScene());});
+        Button resume = createButton("Resume Game", event -> mainTheater.giveSceneTo(mainTheater.previousScene()));
         Button changePlayer = createButton("Change Player", event -> showChoosePlayerItems());
         Button newGame = createButton("New Game", event -> {
             Player player = new Player(mainTheater.getGameScheme().getCurrentPlayer().loadPlayerAttribs());
@@ -297,12 +295,7 @@ public class StartScreen extends SizableScene {
             loadGameButtons.getChildren().get(5).setDisable(true);
         }
 
-        if (mainTheater.previousScene() == null){
-            loadGameButtons.getChildren().get(0).setDisable(true);
-        } else {
-            loadGameButtons.getChildren().get(0).setDisable(false);
-
-        }
+        loadGameButtons.getChildren().get(0).setDisable(mainTheater.previousScene() == null);
 
 
         mode = Mode.LOAD;

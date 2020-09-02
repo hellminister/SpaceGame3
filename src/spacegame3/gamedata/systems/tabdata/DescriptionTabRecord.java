@@ -20,7 +20,7 @@ public class DescriptionTabRecord implements TabRecord {
                     case "name" -> name = prop[1];
                     case "text" -> text = ("".equals(text) ? "" : (text + "/n")) + prop[1];
                     case "image" -> imageURL = prop[1];
-                    case "tab" -> text = text;
+                    case "tab" -> { /* do nothing it was already treated */ }
                     default -> LOG.warning(() -> prop[0] + " not treated " + Arrays.toString(prop));
                 }
         }

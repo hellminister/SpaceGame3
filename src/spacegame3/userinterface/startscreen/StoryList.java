@@ -25,7 +25,7 @@ public class StoryList {
         try (Stream<Path> walk = Files.walk(STORIES_HEAD, 1)){
             stories = walk.filter(Files::isDirectory)
                     .skip(1)
-                    .map(q -> new GameScheme(q))
+                    .map(GameScheme::new)
                     .collect(Collectors.toMap(GameScheme::getStoryName, Function.identity()));
         } catch (IOException e) {
             LOG.severe(e::toString);

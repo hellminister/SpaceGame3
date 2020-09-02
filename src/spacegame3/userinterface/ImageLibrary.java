@@ -19,6 +19,7 @@ public final class ImageLibrary {
         theLibrary = new ConcurrentHashMap<>();
     }
 
+    // TODO make it so it checks the story folder first
     public static Image getImage(String imagePath) {
         return library.theLibrary.computeIfAbsent(imagePath, key -> new Image(library.getClass().getResourceAsStream(IMAGE_LIBRARY_FILE_PATH + key)));
     }

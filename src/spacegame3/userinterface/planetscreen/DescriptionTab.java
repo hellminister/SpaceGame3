@@ -13,7 +13,7 @@ import spacegame3.userinterface.ImageLibrary;
 
 public class DescriptionTab extends TabLike<DescriptionTabRecord>{
 
-    private VBox basePane;
+    private final VBox basePane;
 
     public DescriptionTab(DescriptionTabRecord record) {
         super(record);

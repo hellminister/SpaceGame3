@@ -88,7 +88,7 @@ public class SpaceGame extends Application {
 
 
     public SizableScene getPlanetScreen(CelestialBody planet) {
-        planetScreen.setCelectialBody(planet);
+        planetScreen.setLandedOn(planet);
         return planetScreen;
     }
 
@@ -107,7 +107,7 @@ public class SpaceGame extends Application {
             giveSceneTo(getPlanetScreen(cb));
         } else {
             StarSystem ss = gameScheme.getGameState().getStarSystem();
-            // TODO once the scene is created
+            // TODO once the star system scene is created
         }
     }
 }

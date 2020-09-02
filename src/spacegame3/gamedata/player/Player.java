@@ -3,7 +3,7 @@ package spacegame3.gamedata.player;
 import java.util.Map;
 
 public class Player {
-    private Map<String, String> playerAttribs;
+    private final Map<String, String> playerAttribs;
     private boolean hasChanged;
 
     public Player(Map<String, String> playerAttribs) {
@@ -22,6 +22,10 @@ public class Player {
         StringBuilder sb = new StringBuilder();
 
         return sb.toString();
+    }
+
+    public String getAttribValue(String attrib){
+        return playerAttribs.get(attrib);
     }
 
     public void saved() {

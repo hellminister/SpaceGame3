@@ -1,7 +1,6 @@
 package spacegame3.gamedata;
 
 import spacegame3.gamedata.player.Player;
-import spacegame3.gamedata.systems.CelestialBody;
 import spacegame3.userinterface.startscreen.PlayerList;
 import spacegame3.userinterface.startscreen.PlayerSaveInfo;
 import spacegame3.userinterface.startscreen.QuestionBox;

@@ -7,8 +7,8 @@ import spacegame3.gamedata.time.StarDate;
 
 public class GameState {
 
-    private Player player;
-    private StarDate currentTime;
+    private final Player player;
+    private final StarDate currentTime;
 
     private GameScheme gameScheme;
 

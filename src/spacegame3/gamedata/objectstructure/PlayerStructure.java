@@ -41,7 +41,7 @@ public final class PlayerStructure {
             String filling = "";
             int size = 0;
 
-            while (line != null) {
+            while (line != null && !line.startsWith("#")) {
                 words = line.split(" ?\" ?\"?");
 
                 String[] finalWords = words;
@@ -94,8 +94,8 @@ public final class PlayerStructure {
         }
 
         playerStringAttribute = Collections.unmodifiableMap(temp_playerStringAttribute);
-        attributeValue = Collections.unmodifiableMap(temp_attributeValue);  // will have to go deeper
-        linkedAttributeValue = Collections.unmodifiableMap(temp_linkedAttributeValue);  // will have to go deeper
+        attributeValue = Collections.unmodifiableMap(temp_attributeValue);
+        linkedAttributeValue = Collections.unmodifiableMap(temp_linkedAttributeValue);  // TODO need to go deeper
         linkedAttribute = Collections.unmodifiableMap(temp_linkedAttribute);
         saveFileName = Collections.unmodifiableList(temp_saveFileName);
         description = Collections.unmodifiableList(temp_description);
