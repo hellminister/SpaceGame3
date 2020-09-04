@@ -4,6 +4,7 @@ import spacegame3.gamedata.objectstructure.CelestialBodyStructure;
 import spacegame3.gamedata.objectstructure.PlayerStructure;
 import spacegame3.gamedata.systems.Universe;
 import spacegame3.gamedata.time.StarDateFormatter;
+import spacegame3.userinterface.planetscreen.PlanetScreenBarMaker;
 import spacegame3.util.Utilities;
 
 import java.io.BufferedReader;
@@ -27,6 +28,7 @@ public class StoryTellingScheme {
     private Universe universe;
     private final Map<String, StarDateFormatter> timeFormatters;
     private CelestialBodyStructure celestialBodyStructure;
+    private PlanetScreenBarMaker psbm;
 
     public StoryTellingScheme(Path resourcesPath) {
         this.resourcesPath = resourcesPath;
@@ -34,6 +36,13 @@ public class StoryTellingScheme {
         this.playerStructure = null;
         this.storyName = resourcesPath.getFileName().toString();
         this.timeFormatters = new HashMap<>();
+    }
+
+    public PlanetScreenBarMaker getPlanetScreenBarMaker(){
+        if (psbm == null){
+            psbm = new PlanetScreenBarMaker(resourcesPath);
+        }
+        return psbm;
     }
 
     public StarDateFormatter getFormatter(String calendarName){

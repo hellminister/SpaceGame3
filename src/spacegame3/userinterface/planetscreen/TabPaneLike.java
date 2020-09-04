@@ -94,12 +94,6 @@ public class TabPaneLike extends Pane {
             this.name = name;
         }
 
-        /**
-         * Invoked when a specific event of the type for which this handler is
-         * registered happens.
-         *
-         * @param event the event which occurred
-         */
         @Override
         public void handle(ActionEvent event) {
             for (var tab : tabs){

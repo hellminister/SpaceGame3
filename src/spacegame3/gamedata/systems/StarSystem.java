@@ -15,19 +15,19 @@ public class StarSystem {
     public static final String ID_NAME = "SYSTEM";
     private static final int PROP_NAME_POSITION = 0;
     private static final int PROP_VALUE_POSITION = 1;
-    private String name;
+    private final Map<String, String> attributes;
     private final Map<String, CelestialBody> celestialBodies;
 
 
     public StarSystem(Map<String, List<String>> data, CelestialBodyStructure cbs){
         celestialBodies = new HashMap<>();
+        attributes = new HashMap<>();
 
         List<String> systemData = data.get(ID_NAME);
 
         for (String propraw : systemData){
             String[] prop = propraw.split("\\|");
             switch (prop[PROP_NAME_POSITION]) {
-                case "name" -> this.name = prop[PROP_VALUE_POSITION];
                 case "contains" -> {
                     String[] objects = prop[PROP_VALUE_POSITION].split(",");
                     for (String id : objects) {
@@ -36,9 +36,10 @@ public class StarSystem {
                         celestialBodies.put(id, cb);
                     }
                 }
-                default -> LOG.warning(() -> prop[PROP_NAME_POSITION] + " is not treated " + propraw);
+                default -> attributes.put(prop[PROP_NAME_POSITION], prop[PROP_VALUE_POSITION]);
             }
         }
+
 
     }
 
@@ -51,6 +52,10 @@ public class StarSystem {
     }
 
     public String getName() {
-        return name;
+        return attributes.get("name");
+    }
+
+    public String getAttribute(String attribName){
+        return attributes.get(attribName);
     }
 }
