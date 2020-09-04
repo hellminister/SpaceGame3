@@ -18,6 +18,8 @@ public class PlanetScreen extends SizableScene {
     private CelestialBody landedOn;
 
     private final GridPane topBar;
+    private final GridPane bottomBar;
+    private Button departButton;
 
     /**
      * Creates a Scene for a specific root Node.
@@ -30,10 +32,9 @@ public class PlanetScreen extends SizableScene {
         pane.setStyle("-fx-background-color: black");
 
         topBar = createTopBar();
+        bottomBar = createBottomBar();
         pane.setTopBar(topBar);
-
-
-
+        pane.setBottomBar(bottomBar);
 
         setOnKeyReleased(event -> {
             switch (event.getCode()) {
@@ -42,6 +43,38 @@ public class PlanetScreen extends SizableScene {
                 default:
             }
         });
+    }
+
+    private GridPane createBottomBar() {
+        GridPane gp = new GridPane();
+        gp.setStyle("-fx-background-color: lightgrey");
+        gp.setHgap(5);
+
+        ColumnConstraints cc1 = new ColumnConstraints();
+        cc1.setHalignment(HPos.LEFT);
+        cc1.setHgrow(Priority.ALWAYS);
+
+        ColumnConstraints cc2 = new ColumnConstraints();
+        cc2.setHalignment(HPos.CENTER);
+        cc2.setHgrow(Priority.ALWAYS);
+
+        ColumnConstraints cc3 = new ColumnConstraints();
+        cc3.setHalignment(HPos.RIGHT);
+        cc3.setHgrow(Priority.ALWAYS);
+
+        ColumnConstraints cc4 = new ColumnConstraints(100,100,100);
+        cc4.setHalignment(HPos.RIGHT);
+
+        gp.getColumnConstraints().addAll(cc1, cc2, cc3, cc4);
+
+        departButton = new Button("depart");
+        departButton.setMaxWidth(100);
+        departButton.setMinWidth(100);
+        departButton.setPrefWidth(100);
+
+        gp.add(departButton, 3, 0);
+
+        return gp;
     }
 
     private GridPane createTopBar() {
@@ -61,17 +94,7 @@ public class PlanetScreen extends SizableScene {
         cc3.setHalignment(HPos.RIGHT);
         cc3.setHgrow(Priority.ALWAYS);
 
-        ColumnConstraints cc4 = new ColumnConstraints(100,100,100);
-        cc4.setHalignment(HPos.RIGHT);
-
-        gp.getColumnConstraints().addAll(cc1, cc2, cc3, cc4);
-
-        Button bt = new Button("depart");
-        bt.setMaxWidth(100);
-        bt.setMinWidth(100);
-        bt.setPrefWidth(100);
-
-        gp.add(bt, 3, 0);
+        gp.getColumnConstraints().addAll(cc1, cc2, cc3);
 
         return gp;
     }

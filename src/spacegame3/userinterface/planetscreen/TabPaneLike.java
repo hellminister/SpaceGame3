@@ -3,10 +3,7 @@ package spacegame3.userinterface.planetscreen;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import spacegame3.gamedata.systems.tabdata.TabRecord;
 
 import java.util.LinkedList;
@@ -85,6 +82,10 @@ public class TabPaneLike extends Pane {
         btn.setOnAction(new Action(name));
 
         return btn;
+    }
+
+    public void setBottomBar(Pane bottomBar) {
+        bp.setBottom(bottomBar);
     }
 
     private class Action implements EventHandler<ActionEvent> {
