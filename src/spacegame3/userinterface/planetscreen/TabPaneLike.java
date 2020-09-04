@@ -24,6 +24,8 @@ public class TabPaneLike extends Pane {
 
     private final List<TabLike<? extends TabRecord>> tabs;
 
+    private Button selected;
+
     public TabPaneLike(){
         bp = new BorderPane();
 
@@ -65,6 +67,10 @@ public class TabPaneLike extends Pane {
         Button btn = createButton(tab.getName());
 
         tab.setVisible(tabs.isEmpty());
+        btn.setDisable(tabs.isEmpty());
+        if (tabs.isEmpty()){
+            selected = btn;
+        }
 
         tabs.add(tab);
         nameTab.getChildren().add(btn);
@@ -79,7 +85,7 @@ public class TabPaneLike extends Pane {
         btn.setMinSize(BUTTON_MIN_WIDTH, BUTTON_MIN_HEIGHT);
         btn.setPrefSize(BUTTON_PREF_WIDTH, BUTTON_PREF_HEIGHT);
 
-        btn.setOnAction(new Action(name));
+        btn.setOnAction(new Action(name, btn));
 
         return btn;
     }
@@ -90,13 +96,18 @@ public class TabPaneLike extends Pane {
 
     private class Action implements EventHandler<ActionEvent> {
         private final String name;
+        private final Button me;
 
-        public Action(String name) {
+        public Action(String name, Button me) {
             this.name = name;
+            this.me = me;
         }
 
         @Override
         public void handle(ActionEvent event) {
+            selected.setDisable(false);
+            me.setDisable(true);
+            selected = me;
             for (var tab : tabs){
                 tab.setVisible(name.equals(tab.getName()));
             }
