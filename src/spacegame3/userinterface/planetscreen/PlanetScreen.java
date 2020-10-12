@@ -25,16 +25,17 @@ public class PlanetScreen extends SizableScene {
      * Creates a Scene for a specific root Node.
      */
     public PlanetScreen(SpaceGame spaceGame) {
-        super(new StackPane(), spaceGame);
+        super(new BorderPane(), spaceGame);
 
-        pane = new TabPaneLike();
-        ((Pane)getRoot()).getChildren().add(pane);
+        pane = new TabPaneLike(TabPaneLike.TabSide.RIGHT);
+        var root = ((BorderPane)getRoot());
+        root.setCenter(pane);
         pane.setStyle("-fx-background-color: black");
 
         topBar = createTopBar();
         bottomBar = createBottomBar();
-        pane.setTopBar(topBar);
-        pane.setBottomBar(bottomBar);
+        root.setTop(topBar);
+        root.setBottom(bottomBar);
 
         setOnKeyReleased(event -> {
             switch (event.getCode()) {

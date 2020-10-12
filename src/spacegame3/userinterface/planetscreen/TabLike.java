@@ -8,8 +8,14 @@ public abstract class TabLike<T extends TabRecord> extends Pane {
     protected T tabRecord;
     protected TabPaneLike container;
 
-    public TabLike(T record){
+    protected final Pane basePane;
+
+    public TabLike(T record, Pane base){
         tabRecord = record;
+        basePane = base;
+
+        this.getChildren().add(basePane);
+
     }
 
     public String getName() {
@@ -21,5 +27,8 @@ public abstract class TabLike<T extends TabRecord> extends Pane {
         attachTo();
     }
 
-    protected abstract void attachTo();
+    protected void attachTo(){
+    }
+
+
 }

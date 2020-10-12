@@ -5,6 +5,7 @@ import javafx.stage.Stage;
 import spacegame3.gamedata.GameScheme;
 import spacegame3.gamedata.systems.CelestialBody;
 import spacegame3.gamedata.systems.StarSystem;
+import spacegame3.userinterface.ImageLibrary;
 import spacegame3.userinterface.SizableScene;
 import spacegame3.userinterface.planetscreen.PlanetScreen;
 import spacegame3.userinterface.startscreen.StartScreen;
@@ -54,6 +55,7 @@ public class SpaceGame extends Application {
 
     public void setGameScheme(GameScheme gameScheme) {
         this.gameScheme = gameScheme;
+        ImageLibrary.setStoryTellingPath(gameScheme.getStoryPath());
     }
 
     @Override

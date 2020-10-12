@@ -6,6 +6,6 @@ Earth:type|Planet
 p1d1:tab|DESCRIPTION
 p1d1:name|Earth
 p1d1:text|This is the human home world.
-p1d1:image|PIA06909-1280x1024.jpg
+p1d1:image|backgrounds/PIA06909-1280x1024.jpg
 p1d2:tab|SPACEPORT
 p1d2:name|Destiny

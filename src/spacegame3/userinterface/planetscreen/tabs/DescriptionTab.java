@@ -1,4 +1,4 @@
-package spacegame3.userinterface.planetscreen;
+package spacegame3.userinterface.planetscreen.tabs;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -10,15 +10,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import spacegame3.gamedata.systems.tabdata.DescriptionTabRecord;
 import spacegame3.userinterface.ImageLibrary;
+import spacegame3.userinterface.planetscreen.TabLike;
 
-public class DescriptionTab extends TabLike<DescriptionTabRecord>{
-
-    private final VBox basePane;
+public class DescriptionTab extends TabLike<DescriptionTabRecord> {
 
     public DescriptionTab(DescriptionTabRecord record) {
-        super(record);
-
-        basePane = new VBox();
+        super(record, new VBox());
 
         basePane.setStyle("-fx-background-color: darkslategray");
 
@@ -47,11 +44,10 @@ public class DescriptionTab extends TabLike<DescriptionTabRecord>{
 
         basePane.getChildren().addAll(ima, text);
 
-        this.getChildren().add(basePane);
     }
 
     @Override
-    protected void attachTo() {
+    protected void attachTo(){
         basePane.maxWidthProperty().bind(container.getContentPane().widthProperty());
         basePane.minWidthProperty().bind(container.getContentPane().widthProperty());
         basePane.prefWidthProperty().bind(container.getContentPane().widthProperty());
@@ -60,4 +56,5 @@ public class DescriptionTab extends TabLike<DescriptionTabRecord>{
         basePane.minHeightProperty().bind(container.getContentPane().heightProperty());
         basePane.prefHeightProperty().bind(container.getContentPane().heightProperty());
     }
+
 }

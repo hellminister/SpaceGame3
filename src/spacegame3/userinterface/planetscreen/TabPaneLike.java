@@ -19,14 +19,14 @@ public class TabPaneLike extends Pane {
     private static final int BUTTON_MIN_WIDTH = 150;
 
     private final BorderPane bp;
-    private final VBox nameTab;
+    private final Pane nameTab;
     private final StackPane tabContent;
 
     private final List<TabLike<? extends TabRecord>> tabs;
 
     private Button selected;
 
-    public TabPaneLike(){
+    public TabPaneLike(TabSide side){
         bp = new BorderPane();
 
         getChildren().add(bp);
@@ -39,14 +39,36 @@ public class TabPaneLike extends Pane {
         bp.minHeightProperty().bind(heightProperty());
         bp.prefHeightProperty().bind(heightProperty());
 
-        nameTab = new VBox();
+
         tabContent = new StackPane();
         tabs = new LinkedList<>();
 
-        nameTab.setStyle("-fx-background-color: lightgrey");
+        switch(side){
+            case TOP -> {
+                nameTab = new HBox();
+                bp.setTop(nameTab);
+            }
+            case BOTTOM -> {
+                nameTab = new HBox();
+                bp.setBottom(nameTab);
+            }
+            case RIGHT -> {
+                nameTab = new VBox();
+                bp.setRight(nameTab);
+            }
+            case LEFT -> {
+                nameTab = new VBox();
+                bp.setLeft(nameTab);
+            }
+            default -> {
+                nameTab = new VBox();
+            }
+
+        }
 
         bp.setCenter(tabContent);
-        bp.setRight(nameTab);
+
+        nameTab.setStyle("-fx-background-color: lightgrey");
     }
 
     public void clear(){
@@ -57,10 +79,6 @@ public class TabPaneLike extends Pane {
 
     public Pane getContentPane(){
         return tabContent;
-    }
-
-    public void setTopBar(Pane top){
-        bp.setTop(top);
     }
 
     public void add(TabLike<? extends TabRecord> tab){
@@ -90,10 +108,6 @@ public class TabPaneLike extends Pane {
         return btn;
     }
 
-    public void setBottomBar(Pane bottomBar) {
-        bp.setBottom(bottomBar);
-    }
-
     private class Action implements EventHandler<ActionEvent> {
         private final String name;
         private final Button me;
@@ -114,4 +128,11 @@ public class TabPaneLike extends Pane {
         }
     }
 
+    public enum TabSide {
+        TOP,
+        BOTTOM,
+        RIGHT,
+        LEFT,
+        ;
+    }
 }

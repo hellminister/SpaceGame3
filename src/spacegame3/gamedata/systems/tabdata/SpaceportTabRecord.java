@@ -1,6 +1,6 @@
 package spacegame3.gamedata.systems.tabdata;
 
-import spacegame3.userinterface.planetscreen.Spaceport;
+import spacegame3.userinterface.planetscreen.tabs.Spaceport;
 
 import java.util.Arrays;
 import java.util.List;
