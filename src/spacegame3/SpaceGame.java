@@ -16,7 +16,7 @@ import java.nio.file.Paths;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-public class SpaceGame extends Application {
+public final class SpaceGame extends Application {
     private static final Logger LOG = Logger.getLogger(SpaceGame.class.getName());
 
     static {

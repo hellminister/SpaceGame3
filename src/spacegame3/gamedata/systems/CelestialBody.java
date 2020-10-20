@@ -1,7 +1,7 @@
 package spacegame3.gamedata.systems;
 
 import spacegame3.gamedata.objectstructure.CelestialBodyStructure;
-import spacegame3.gamedata.systems.tabdata.TabRecord;
+import spacegame3.util.tablikepane.TabRecord;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -52,7 +52,7 @@ public class CelestialBody extends StellarObject{
 
     @Override
     public boolean isLandable(){
-        return true;
+        return !tabInfo.isEmpty();
     }
 
     public List<TabRecord> getTabs() {

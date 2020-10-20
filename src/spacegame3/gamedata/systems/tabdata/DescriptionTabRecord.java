@@ -1,6 +1,7 @@
 package spacegame3.gamedata.systems.tabdata;
 
 import spacegame3.userinterface.planetscreen.tabs.DescriptionTab;
+import spacegame3.util.tablikepane.TabRecord;
 
 import java.util.Arrays;
 import java.util.List;

@@ -2,23 +2,53 @@ package spacegame3.gamedata.systems.tabdata;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import spacegame3.gamedata.ship.Ship;
-import spacegame3.userinterface.planetscreen.tabs.Shipyard;
+import spacegame3.userinterface.planetscreen.tabs.shipyard.Shipyard;
+import spacegame3.util.tablikepane.TabRecord;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Logger;
 
 public class ShipyardRecord implements TabRecord {
+    private static final Logger LOG = Logger.getLogger(ShipyardRecord.class.getName());
 
     private String name;
 
-    private final ObservableList<Ship> newShips;
-    private final ObservableList<Ship> secondhandShips;
+    private final ObservableMap<String, ObservableList<Ship>> newShips;
+    private final ObservableMap<String, ObservableList<Ship>> secondhandShips;
 
-    public ShipyardRecord(){
+    public ShipyardRecord(List<String> strings){
         name = "Shipyard";
 
-        newShips = FXCollections.observableList(new ArrayList<>());
-        secondhandShips = FXCollections.observableList(new ArrayList<>());
+        newShips = createMap();
+        secondhandShips = createMap();
+
+        for (String s : strings){
+            String[] prop = s.split("\\|");
+            switch (prop[0]){
+                case "name" -> name = prop[1];
+                case "tab" -> { /* do nothing, it was already treated*/ }
+                default -> LOG.warning(() -> prop[0] + " not treated " + Arrays.toString(prop));
+            }
+        }
+    }
+
+    private ObservableMap<String, ObservableList<Ship>> createMap() {
+        ObservableMap<String, ObservableList<Ship>> map = FXCollections.observableHashMap();
+
+        map.put("A", FXCollections.observableArrayList());
+        map.put("B", FXCollections.observableArrayList());
+        map.put("C", FXCollections.observableArrayList());
+
+        /*  to activate once i know how to access the category
+        for (String cat : categories){
+            map.put(cat, FXCollections.observableArrayList());
+        }
+        */
+
+        return map;
     }
 
 
@@ -32,11 +62,11 @@ public class ShipyardRecord implements TabRecord {
         return name;
     }
 
-    public ObservableList<Ship> getNewShips(){
+    public ObservableMap<String, ObservableList<Ship>> getNewShips(){
         return newShips;
     }
 
-    public ObservableList<Ship> getSecondhandShips() {
+    public ObservableMap<String, ObservableList<Ship>> getSecondhandShips() {
         return secondhandShips;
     }
 }

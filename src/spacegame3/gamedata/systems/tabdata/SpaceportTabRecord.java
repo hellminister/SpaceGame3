@@ -1,12 +1,13 @@
 package spacegame3.gamedata.systems.tabdata;
 
 import spacegame3.userinterface.planetscreen.tabs.Spaceport;
+import spacegame3.util.tablikepane.TabRecord;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class SpaceportTabRecord implements TabRecord{
+public class SpaceportTabRecord implements TabRecord {
     private static final Logger LOG = Logger.getLogger(SpaceportTabRecord.class.getName());
 
     private String name = "Spaceport";

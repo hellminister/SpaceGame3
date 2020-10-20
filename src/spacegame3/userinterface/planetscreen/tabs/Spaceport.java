@@ -7,9 +7,9 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import spacegame3.gamedata.systems.tabdata.SpaceportPerson;
 import spacegame3.gamedata.systems.tabdata.SpaceportTabRecord;
-import spacegame3.userinterface.planetscreen.TabLike;
+import spacegame3.util.tablikepane.TabLikeWithRecord;
 
-public class Spaceport extends TabLike<SpaceportTabRecord> {
+public class Spaceport extends TabLikeWithRecord<SpaceportTabRecord> {
 
     private static final int BUTTON_MAX_HEIGHT = 25;
     private static final int BUTTON_PREF_HEIGHT = 25;
@@ -89,17 +89,6 @@ public class Spaceport extends TabLike<SpaceportTabRecord> {
         btn.setOnAction(new Action(person, btn));
 
         return btn;
-    }
-
-    @Override
-    protected void attachTo(){
-        basePane.maxWidthProperty().bind(container.getContentPane().widthProperty());
-        basePane.minWidthProperty().bind(container.getContentPane().widthProperty());
-        basePane.prefWidthProperty().bind(container.getContentPane().widthProperty());
-
-        basePane.maxHeightProperty().bind(container.getContentPane().heightProperty());
-        basePane.minHeightProperty().bind(container.getContentPane().heightProperty());
-        basePane.prefHeightProperty().bind(container.getContentPane().heightProperty());
     }
 
 

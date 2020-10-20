@@ -7,8 +7,9 @@ import javafx.scene.layout.*;
 import spacegame3.SpaceGame;
 import spacegame3.gamedata.GameScheme;
 import spacegame3.gamedata.systems.CelestialBody;
-import spacegame3.gamedata.systems.tabdata.TabRecord;
+import spacegame3.util.tablikepane.TabRecord;
 import spacegame3.userinterface.SizableScene;
+import spacegame3.util.tablikepane.TabPaneLike;
 
 public class PlanetScreen extends SizableScene {
 

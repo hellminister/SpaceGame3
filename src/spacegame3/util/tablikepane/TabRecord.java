@@ -1,6 +1,8 @@
-package spacegame3.gamedata.systems.tabdata;
+package spacegame3.util.tablikepane;
 
-import spacegame3.userinterface.planetscreen.TabLike;
+import spacegame3.gamedata.systems.tabdata.DescriptionTabRecord;
+import spacegame3.gamedata.systems.tabdata.ShipyardRecord;
+import spacegame3.gamedata.systems.tabdata.SpaceportTabRecord;
 
 import java.util.List;
 
@@ -15,6 +17,7 @@ public interface TabRecord {
                 switch (prop[1]){
                     case "DESCRIPTION" -> tr = new DescriptionTabRecord(strings);
                     case "SPACEPORT" -> tr = new SpaceportTabRecord(strings);
+                    case "SHIPYARD" -> tr = new ShipyardRecord(strings);
                 }
             }
         }
@@ -22,6 +25,6 @@ public interface TabRecord {
         return tr;
     }
 
-    <T extends TabRecord> TabLike<T> toTab();
+    <T extends TabRecord> TabLikeWithRecord<T> toTab();
     String getName();
 }
