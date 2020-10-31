@@ -1,4 +1,5 @@
 package spacegame3;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 import spacegame3.gamedata.GameScheme;
@@ -14,6 +15,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+
+/**
+ * Main project class
+ * Creates the Stage and loads the different scenes
+ * Contains a link to the current GameScheme
+ */
 public final class SpaceGame extends Application {
     private static final Logger LOG = Logger.getLogger(SpaceGame.class.getName());
 
@@ -27,32 +34,29 @@ public final class SpaceGame extends Application {
             LOG.info(e::toString);
         }
     }
-    /*
-        *Instance variables
-    */
+
+
     private final StartScreen startScreen;
     private final PlanetScreen planetScreen;
 
     private Stage stage;
 
-    private SizableScene previousScene = null;
+    private SizableScene previousScene = null; // The previous screen before having returned to the StartScreen
 
     private GameScheme gameScheme;
 
     private boolean gameStarted;
 
     /**
-     *links startScreen and planetScreen to this context
+     *  links startScreen and planetScreen to this context
     */
-    public SpaceGame()
-    {
+    public SpaceGame() {
         startScreen = new StartScreen(this);
         planetScreen = new PlanetScreen(this);
         gameScheme = null;
         gameStarted = false;
     }
 
-    //game scheme getter
     public GameScheme getGameScheme() {
         return gameScheme;
     }
@@ -67,8 +71,8 @@ public final class SpaceGame extends Application {
     }
 
     /**
-        *starts up the the game
-        *creates title and scene + shows
+     * starts up the the game
+     * creates title and scene + shows
     **/
     @Override
     public void start(Stage primaryStage) {
@@ -98,7 +102,6 @@ public final class SpaceGame extends Application {
 
     /**
      * main method - runs + launches game
-     * takes in String[] args
     **/
     public static void main(String[] args) {
         launch(args);
@@ -109,8 +112,8 @@ public final class SpaceGame extends Application {
     }
 
     /**
-     *sets the planet screen to have landed on a given CelestialBody
-     *returns planet screen
+     * sets the planet screen to have landed on a given CelestialBody
+     * returns planet screen
     */
     public SizableScene getPlanetScreen(CelestialBody planet) {
         planetScreen.setLandedOn(planet);
