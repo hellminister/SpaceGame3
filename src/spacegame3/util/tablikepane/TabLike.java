@@ -1,6 +1,7 @@
 package spacegame3.util.tablikepane;
 
 import javafx.scene.layout.Pane;
+import spacegame3.util.Utilities;
 
 public abstract class TabLike extends Pane {
 
@@ -23,13 +24,8 @@ public abstract class TabLike extends Pane {
     }
 
     protected void attachTo(){
-        basePane.maxWidthProperty().bind(container.getContentPane().widthProperty());
-        basePane.minWidthProperty().bind(container.getContentPane().widthProperty());
-        basePane.prefWidthProperty().bind(container.getContentPane().widthProperty());
-
-        basePane.maxHeightProperty().bind(container.getContentPane().heightProperty());
-        basePane.minHeightProperty().bind(container.getContentPane().heightProperty());
-        basePane.prefHeightProperty().bind(container.getContentPane().heightProperty());
+        Utilities.attach(basePane, container.getContentPane().widthProperty(),
+                container.getContentPane().heightProperty());
     }
 
 

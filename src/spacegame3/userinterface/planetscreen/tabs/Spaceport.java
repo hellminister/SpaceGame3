@@ -7,6 +7,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import spacegame3.gamedata.systems.tabdata.SpaceportPerson;
 import spacegame3.gamedata.systems.tabdata.SpaceportTabRecord;
+import spacegame3.util.Utilities;
 import spacegame3.util.tablikepane.TabLikeWithRecord;
 
 public class Spaceport extends TabLikeWithRecord<SpaceportTabRecord> {
@@ -30,32 +31,11 @@ public class Spaceport extends TabLikeWithRecord<SpaceportTabRecord> {
         StackPane rightSide = new StackPane();
         rightSide.setStyle("-fx-background-color: darkslategray");
 
-        leftSide.maxWidthProperty().bind(basePane.widthProperty().multiply(0.66));
-        leftSide.minWidthProperty().bind(basePane.widthProperty().multiply(0.66));
-        leftSide.prefWidthProperty().bind(basePane.widthProperty().multiply(0.66));
-
-        leftSide.maxHeightProperty().bind(basePane.heightProperty());
-        leftSide.minHeightProperty().bind(basePane.heightProperty());
-        leftSide.prefHeightProperty().bind(basePane.heightProperty());
-
-        rightSide.maxWidthProperty().bind(basePane.widthProperty().multiply(0.34));
-        rightSide.minWidthProperty().bind(basePane.widthProperty().multiply(0.34));
-        rightSide.prefWidthProperty().bind(basePane.widthProperty().multiply(0.34));
-
-        rightSide.maxHeightProperty().bind(basePane.heightProperty());
-        rightSide.minHeightProperty().bind(basePane.heightProperty());
-        rightSide.prefHeightProperty().bind(basePane.heightProperty());
-
+        Utilities.attach(leftSide, basePane.widthProperty().multiply(0.66), basePane.heightProperty());
+        Utilities.attach(rightSide, basePane.widthProperty().multiply(0.34), basePane.heightProperty());
 
         ScrollPane sp = new ScrollPane();
-
-        sp.maxWidthProperty().bind(leftSide.widthProperty());
-        sp.minWidthProperty().bind(leftSide.widthProperty());
-        sp.prefWidthProperty().bind(leftSide.widthProperty());
-
-        sp.maxHeightProperty().bind(leftSide.heightProperty().multiply(0.66));
-        sp.minHeightProperty().bind(leftSide.heightProperty().multiply(0.66));
-        sp.prefHeightProperty().bind(leftSide.heightProperty().multiply(0.66));
+        Utilities.attach(sp, leftSide.widthProperty(), leftSide.heightProperty().multiply(0.66));
 
         tp = new TilePane();
 

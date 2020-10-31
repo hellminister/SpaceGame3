@@ -2,6 +2,7 @@ package spacegame3.gamedata;
 
 import spacegame3.gamedata.objectstructure.CelestialBodyStructure;
 import spacegame3.gamedata.objectstructure.PlayerStructure;
+import spacegame3.gamedata.ship.ShipFactory;
 import spacegame3.gamedata.systems.Universe;
 import spacegame3.gamedata.time.StarDateFormatter;
 import spacegame3.userinterface.planetscreen.PlanetScreenBarMaker;
@@ -29,6 +30,7 @@ public class StoryTellingScheme {
     private final Map<String, StarDateFormatter> timeFormatters;
     private CelestialBodyStructure celestialBodyStructure;
     private PlanetScreenBarMaker psbm;
+    private ShipFactory shipFactory;
 
     public StoryTellingScheme(Path resourcesPath) {
         this.resourcesPath = resourcesPath;
@@ -36,6 +38,7 @@ public class StoryTellingScheme {
         this.playerStructure = null;
         this.storyName = resourcesPath.getFileName().toString();
         this.timeFormatters = new HashMap<>();
+        this.shipFactory = null;
     }
 
     public PlanetScreenBarMaker getPlanetScreenBarMaker(){
@@ -75,6 +78,13 @@ public class StoryTellingScheme {
         return universe;
     }
 
+    public ShipFactory getShipFactory() {
+        if (shipFactory == null){
+            shipFactory = new ShipFactory(this);
+        }
+        return shipFactory;
+    }
+
     public String getDescription() {
         if (description == null){
             description = Utilities.readFile(resourcesPath.resolve(DESCRIPTION_FILE));
@@ -107,4 +117,6 @@ public class StoryTellingScheme {
             LOG.severe(() -> "Problem while loading start.txt file : " + e.toString());
         }
     }
+
+
 }

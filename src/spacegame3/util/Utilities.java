@@ -1,5 +1,11 @@
 package spacegame3.util;
 
+import javafx.beans.binding.DoubleExpression;
+import javafx.beans.property.DoubleProperty;
+import javafx.scene.Node;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -41,5 +47,15 @@ public final class Utilities {
         } catch (IOException e) {
             LOG.severe(e::toString);
         }
+    }
+
+    public static void attach(Region pane, DoubleExpression width, DoubleExpression height){
+        pane.maxWidthProperty().bind(width);
+        pane.minWidthProperty().bind(width);
+        pane.prefWidthProperty().bind(width);
+
+        pane.maxHeightProperty().bind(height);
+        pane.minHeightProperty().bind(height);
+        pane.prefHeightProperty().bind(height);
     }
 }

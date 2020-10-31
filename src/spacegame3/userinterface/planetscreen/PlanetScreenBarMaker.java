@@ -28,7 +28,6 @@ public class PlanetScreenBarMaker {
         List<LabelCreator> section = null;
 
         try (BufferedReader br = Files.newBufferedReader(storyPath.resolve(PLANET_SCREEN_URL))){
-            // TODO read file
             String line = br.readLine();
 
             while (line != null && !line.startsWith("#")){

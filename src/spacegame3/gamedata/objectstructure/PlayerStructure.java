@@ -95,7 +95,7 @@ public final class PlayerStructure {
 
         playerStringAttribute = Collections.unmodifiableMap(temp_playerStringAttribute);
         attributeValue = Collections.unmodifiableMap(temp_attributeValue);
-        linkedAttributeValue = Collections.unmodifiableMap(temp_linkedAttributeValue);  // TODO need to go deeper
+        linkedAttributeValue = Collections.unmodifiableMap(temp_linkedAttributeValue);
         linkedAttribute = Collections.unmodifiableMap(temp_linkedAttribute);
         saveFileName = Collections.unmodifiableList(temp_saveFileName);
         description = Collections.unmodifiableList(temp_description);
