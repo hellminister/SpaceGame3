@@ -23,10 +23,15 @@ import spacegame3.util.Utilities;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.logging.Logger;
 
+/**
+ * The scene that build the starting screen when the game starts
+ * Here the player can:
+ *                      select which story to play
+ *                      choose or create a character
+ *                      save, load or create a new game
+ */
 public class StartScreen extends SizableScene {
-    private static final Logger LOG = Logger.getLogger(StartScreen.class.getName());
 
     private static final int HEIGHT = 480;
     private static final String BACK_IMAGE_FILE_PATH = "backgrounds/PIA17563-1920x1200.jpg";
@@ -66,17 +71,29 @@ public class StartScreen extends SizableScene {
     private static final int MIDDLE_INFO_BOX_MIN_WIDTH = 200;
 
 
-    private final Pane insideStoryButtons;
-    private final Pane chooseStoryButtons;
-    private final Pane loadGameButtons;
+    // the left side area
+    private final Pane insideStoryButtons;  // for the Player mode
+    private final Pane chooseStoryButtons;  // for the Story mode
+    private final Pane loadGameButtons;     // for the Load mode
+
+    // the right side area
     private final TextArea infoBox;
+
+    // the middle area
     private final ListView<String> infoBox2;
 
     private final StoryList storyList;
 
+    // indicates in which view the scene is currently in
     private Mode mode;
+
+    // a dialog window
     private final QuestionBox questionner;
 
+    /**
+     * creates the start screen scene
+     * @param spaceGame the main instance of the game
+     */
     public StartScreen(SpaceGame spaceGame) {
         super(new StackPane(), spaceGame);
         questionner = new QuestionBox();
@@ -150,17 +167,30 @@ public class StartScreen extends SizableScene {
 
         setOnKeyReleased(event -> {
             switch (event.getCode()){
-                case ESCAPE:
+                case ESCAPE -> {
                     var previous = spaceGame.previousScene();
                     if (previous != null){
                         spaceGame.giveSceneTo(previous);
+                    }}
+                case ENTER -> {
+                    switch (mode){
+                        case STORY -> chooseStoryButton().fire();
+                        case PLAYER -> choosePlayerButton().fire();
+                        case LOAD -> loadGameButton().fire();
                     }
+                }
+
             }
                 }
         );
 
     }
 
+
+    /**
+     * Creates the middle area
+     * @return the middle area
+     */
     private ListView<String> createMiddleInfoBox() {
         var mInfoBox = new ListView<String>();
         mInfoBox.setEditable(false);
@@ -179,15 +209,15 @@ public class StartScreen extends SizableScene {
                 case PLAYER:
                     if ((selected != null) && !selected.isEmpty()) {
                         infoBox.setText(mainTheater.getGameScheme().getPlayerList().getPlayer(selected).getDescription());
-                        insideStoryButtons.getChildren().get(0).setDisable(false);
+                        choosePlayerButton().setDisable(false);
                     }
                     break;
                 case LOAD:
                     if ((selected != null) && !selected.isEmpty()) {
                         infoBox.setText(mainTheater.getGameScheme().getCurrentPlayer().previewFile(selected));
-                        loadGameButtons.getChildren().get(2).setDisable(false);
+                        newGameButton().setDisable(false);
                         if (mainTheater.gameStarted()){
-                            loadGameButtons.getChildren().get(4).setDisable(false);
+                            saveGameAsButton().setDisable(false);
                         }
                     }
                     break;
@@ -196,7 +226,12 @@ public class StartScreen extends SizableScene {
         return mInfoBox;
     }
 
-    private TextArea createInfoBox() {
+
+    /**
+     * Creates the right area
+     * @return the right area
+     */
+    private static TextArea createInfoBox() {
         TextArea infoBox = new TextArea();
         infoBox.setEditable(false);
         infoBox.setWrapText(true);
@@ -209,17 +244,24 @@ public class StartScreen extends SizableScene {
         return infoBox;
     }
 
+    /**
+     * creates the buttons for the choose player view
+     * @return the button group (for the left area)
+     */
     private VBox createChoosePlayerButtons() {
         Button choosePlayer = createButton("Choose Player", event -> {
             mainTheater.getGameScheme().setCurrentPlayer(mainTheater.getGameScheme().getPlayerList().getPlayer(infoBox2.getSelectionModel().getSelectedItem()));
             mainTheater.getGameScheme().getPlayerList().updatePlayerListFile();
             showLoadGameItems();
         });
+
         Button newPlayer = createButton("New Player", event -> {
             mainTheater.getGameScheme().createNewPlayer(questionner);
             showLoadGameItems();
         });
+
         Button changeStory = createButton("Change Story", event -> showStorySelectionItems());
+
         Button quit = createButton("Quit", event -> quitGame());
 
         VBox insideStory = createButtonsVBox();
@@ -229,6 +271,10 @@ public class StartScreen extends SizableScene {
         return insideStory;
     }
 
+    /**
+     * creates the buttons for the load game / new game view
+     * @return the button group (for the left area)
+     */
     private VBox createLoadGameButtons() {
         Button resume = createButton("Resume Game", event -> mainTheater.giveSceneTo(mainTheater.previousScene()));
         Button changePlayer = createButton("Change Player", event -> showChoosePlayerItems());
@@ -237,7 +283,7 @@ public class StartScreen extends SizableScene {
             mainTheater.getGameScheme().newGameState(player);
             mainTheater.sendToRightScene();
         });
-        Button loadGame = createButton("Load Game", event -> {});
+        Button loadGame = createButton("Load Game", event -> System.out.println("loading?"));
         Button saveAsGame = createButton("Save Game As...", event -> {
             String fileName = questionner.getAnswer("Save file name:");
             fileName += ".sav";
@@ -250,15 +296,19 @@ public class StartScreen extends SizableScene {
         Button changeStory = createButton("Change Story", event -> showStorySelectionItems());
         Button quit = createButton("Quit", event -> quitGame());
 
-        VBox insideStory = createButtonsVBox();
+        VBox loadGameButtons = createButtonsVBox();
 
-        insideStory.getChildren().addAll(resume, changePlayer, newGame, loadGame, saveAsGame, saveGame, changeStory,
+        loadGameButtons.getChildren().addAll(resume, changePlayer, newGame, loadGame, saveAsGame, saveGame, changeStory,
                 quit);
-        insideStory.setTranslateX(BUTTONS_X_TRANSLATE);
-        return insideStory;
+        loadGameButtons.setTranslateX(BUTTONS_X_TRANSLATE);
+        return loadGameButtons;
     }
 
-    private VBox createButtonsVBox() {
+    /**
+     * creates a VBox to store buttons in
+     * @return a VBox
+     */
+    private static VBox createButtonsVBox() {
         VBox insideStory = new VBox(BUTTONS_VERTICAL_SPACING);
         Insets padding = new Insets(TOP_BUTTON_INSET, RIGHT_BUTTON_INSET, BOTTOM_BUTTON_INSET, LEFT_BUTTON_INSET);
         insideStory.setPadding(padding);
@@ -266,10 +316,16 @@ public class StartScreen extends SizableScene {
         return insideStory;
     }
 
-    private void quitGame() {
+    /**
+     * Closes the program
+     */
+    private static void quitGame() {
         Platform.exit();
     }
 
+    /**
+     * Sets the scene to the Load game view
+     */
     private void showLoadGameItems() {
         insideStoryButtons.setVisible(false);
         loadGameButtons.setVisible(true);
@@ -280,31 +336,67 @@ public class StartScreen extends SizableScene {
         infoBox.setText("");
 
         if (infoBox2.getItems().isEmpty()){
-            loadGameButtons.getChildren().get(3).setDisable(true);
-            loadGameButtons.getChildren().get(5).setDisable(true);
+            loadGameButton().setDisable(true);
+            saveGameButton().setDisable(true);
         } else {
             infoBox2.getSelectionModel().selectFirst();
-            loadGameButtons.getChildren().get(3).setDisable(false);
-            loadGameButtons.getChildren().get(5).setDisable(false);
+            loadGameButton().setDisable(false);
+            saveGameButton().setDisable(false);
         }
 
         if (mainTheater.gameStarted()){
-            loadGameButtons.getChildren().get(4).setDisable(false);
+            saveGameAsButton().setDisable(false);
         } else {
-            loadGameButtons.getChildren().get(4).setDisable(true);
-            loadGameButtons.getChildren().get(5).setDisable(true);
+            saveGameAsButton().setDisable(true);
+            saveGameButton().setDisable(true);
         }
 
-        loadGameButtons.getChildren().get(0).setDisable(mainTheater.previousScene() == null);
+        resumeButton().setDisable(mainTheater.previousScene() == null);
 
 
         mode = Mode.LOAD;
+    }
+
+    // This series of methods serves to more easily understand what button is called
+    // If the position of the buttons changes too often or provokes a slowing of the program, then
+    // these methods will be replaced by fields for each button in this class
+
+    private Button chooseStoryButton() {
+        return (Button) chooseStoryButtons.getChildren().get(0);
+    }
+
+    private Button resumeButton() {
+        return (Button) loadGameButtons.getChildren().get(0);
+    }
+
+    private Button saveGameAsButton() {
+        return (Button) loadGameButtons.getChildren().get(4);
+    }
+
+    private Button saveGameButton() {
+        return (Button) loadGameButtons.getChildren().get(5);
+    }
+
+    private Button loadGameButton() {
+        return (Button) loadGameButtons.getChildren().get(3);
+    }
+
+    private Button newGameButton() {
+        return (Button) loadGameButtons.getChildren().get(2);
+    }
+
+    private Button choosePlayerButton() {
+        return (Button) insideStoryButtons.getChildren().get(0);
     }
 
     private ObservableList<String> savedGameList() {
         return FXCollections.observableArrayList(mainTheater.getGameScheme().getCurrentPlayer().getSavedGameList());
     }
 
+    /**
+     * creates the buttons for the choose story view
+     * @return the button group (for the left area)
+     */
     private VBox createChooseStoryButtons() {
         Button chooseStory = createButton("Choose story", null);
         chooseStory.setOnAction(event -> {
@@ -343,6 +435,9 @@ public class StartScreen extends SizableScene {
         infoBox2.setVisible(false);
     }
 
+    /**
+     * Sets the scene to the choose player view
+     */
     private void showChoosePlayerItems() {
         insideStoryButtons.setVisible(true);
         loadGameButtons.setVisible(false);
@@ -357,16 +452,16 @@ public class StartScreen extends SizableScene {
 
         if (mainTheater.getGameScheme().getCurrentPlayer() == null){
             if (infoBox2.getItems().isEmpty()){
-                insideStoryButtons.getChildren().get(0).setDisable(true);
+                choosePlayerButton().setDisable(true);
             } else {
                 infoBox2.getSelectionModel().selectFirst();
                 selected = infoBox2.getSelectionModel().getSelectedItem();
-                insideStoryButtons.getChildren().get(0).setDisable(false);
+                choosePlayerButton().setDisable(false);
             }
         } else {
             infoBox2.getSelectionModel().select(mainTheater.getGameScheme().getCurrentPlayer().getName());
             selected = infoBox2.getSelectionModel().getSelectedItem();
-            insideStoryButtons.getChildren().get(0).setDisable(false);
+            choosePlayerButton().setDisable(false);
         }
 
         if (!selected.isEmpty()) {
@@ -380,6 +475,9 @@ public class StartScreen extends SizableScene {
         return FXCollections.observableArrayList(mainTheater.getGameScheme().getPlayerList().getPlayerList());
     }
 
+    /**
+     * Sets the scene to the story selection view
+     */
     private void showStorySelectionItems() {
         insideStoryButtons.setVisible(false);
         loadGameButtons.setVisible(false);
@@ -403,7 +501,11 @@ public class StartScreen extends SizableScene {
         return FXCollections.observableArrayList(storyList.getStoryNames());
     }
 
-    private GridPane createGridPane() {
+    /**
+     * Creates a GridPane to place each area of the scene
+     * @return the main GridPane of the scene
+     */
+    private static GridPane createGridPane() {
         GridPane startScreenGridPane = new GridPane();
         ColumnConstraints column1 = new ColumnConstraints();
         column1.setPercentWidth(GRID_PANE_MENU_THIRD);
@@ -420,7 +522,12 @@ public class StartScreen extends SizableScene {
         return startScreenGridPane;
     }
 
-    private VBox createCenteringPanesFor(Pane toCenter) {
+    /**
+     * Creates a pane that keeps the given pane center no matter the resizing
+     * @param toCenter the pane to center
+     * @return a pane where the given pane is always centered
+     */
+    private static VBox createCenteringPanesFor(Pane toCenter) {
         VBox verticalCentering = new VBox();
         verticalCentering.setAlignment(Pos.CENTER);
 
@@ -433,7 +540,13 @@ public class StartScreen extends SizableScene {
         return verticalCentering;
     }
 
-    private Button createButton(String text, EventHandler<ActionEvent> action){
+    /**
+     * Creates a button (so they are all of the same size)
+     * @param text      The name of the button
+     * @param action    The action the button will execute
+     * @return  The created button
+     */
+    private static Button createButton(String text, EventHandler<ActionEvent> action){
         Button btn = new Button();
 
         btn.setText(text);
@@ -447,6 +560,9 @@ public class StartScreen extends SizableScene {
         return btn;
     }
 
+    /**
+     * Refreshes this scene based on its current view
+     */
     @Override
     public void refresh() {
         switch (mode){
@@ -456,7 +572,10 @@ public class StartScreen extends SizableScene {
         }
     }
 
-    public enum Mode {
+    /**
+     * Indicates the different views of this scene
+     */
+    private enum Mode {
         STORY,
         PLAYER,
         LOAD,

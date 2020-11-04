@@ -1,5 +1,7 @@
 package spacegame3.util.tablikepane;
 
+import javafx.beans.binding.DoubleExpression;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -8,6 +10,18 @@ import javafx.scene.layout.*;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Make a tab like layout that can contains TabLike objects
+ *
+ * It creates a center area that shows the content of the selected TabLike object
+ *
+ * The tabs are made from Buttons
+ * You can choose on which side the Buttons are
+ * You cannot change the position of the tabs nor close them
+ *
+ * Should probably change the superclass from Pane to Control
+ *
+ */
 public class TabPaneLike extends Pane {
 
     private static final int BUTTON_MAX_HEIGHT = 25;
@@ -17,7 +31,6 @@ public class TabPaneLike extends Pane {
     private static final int BUTTON_PREF_WIDTH = 150;
     private static final int BUTTON_MIN_WIDTH = 150;
 
-    private final BorderPane bp;
     private final Pane nameTab;
     private final StackPane tabContent;
 
@@ -25,8 +38,12 @@ public class TabPaneLike extends Pane {
 
     private Button selected;
 
+    /**
+     * Creates a TabLikePane with the button showing on the given side
+     * @param side The side on which the button should show
+     */
     public TabPaneLike(TabSide side){
-        bp = new BorderPane();
+        BorderPane bp = new BorderPane();
 
         getChildren().add(bp);
 
@@ -71,9 +88,7 @@ public class TabPaneLike extends Pane {
                 nameTab.setMaxWidth(BUTTON_MAX_WIDTH);
                 bp.setLeft(nameTab);
             }
-            default -> {
-                nameTab = new VBox();
-            }
+            default -> nameTab = new VBox();
 
         }
 
@@ -82,16 +97,19 @@ public class TabPaneLike extends Pane {
         nameTab.setStyle("-fx-background-color: lightgrey");
     }
 
+    /**
+     * Removes all the tabs (buttons and contents) from the pane
+     */
     public void clear(){
         nameTab.getChildren().clear();
         tabContent.getChildren().clear();
         tabs.clear();
     }
 
-    public Pane getContentPane(){
-        return tabContent;
-    }
-
+    /**
+     * Adds a TabLike to this container
+     * @param tab The tab to add
+     */
     public void add(TabLike tab){
         Button btn = createButton(tab.getName());
 
@@ -107,7 +125,7 @@ public class TabPaneLike extends Pane {
         tab.setContainer(this);
     }
 
-    public Button createButton(String name){
+    private Button createButton(String name){
         Button btn = new Button(name);
 
         btn.setMaxSize(BUTTON_MAX_WIDTH, BUTTON_MAX_HEIGHT);
@@ -119,6 +137,24 @@ public class TabPaneLike extends Pane {
         return btn;
     }
 
+    /**
+     * @return the width property of the content pane
+     */
+    public ReadOnlyDoubleProperty getContentPaneWidthProperty() {
+        return this.tabContent.widthProperty();
+    }
+
+    /**
+     * @return the height property of the content pane
+     */
+    public ReadOnlyDoubleProperty getContentPaneHeightProperty() {
+        return this.tabContent.heightProperty();
+
+    }
+
+    /**
+     * This class controls the behavior of the tab buttons
+     */
     private class Action implements EventHandler<ActionEvent> {
         private final String name;
         private final Button me;
@@ -139,6 +175,9 @@ public class TabPaneLike extends Pane {
         }
     }
 
+    /**
+     * Enumerates the sides on which to show the tab buttons
+     */
     public enum TabSide {
         TOP,
         BOTTOM,

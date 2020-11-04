@@ -10,8 +10,12 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.logging.Logger;
 
+/**
+ * keeps and loads the list of players available for the chosen story
+ * Also takes care of the save structure
+ */
 public class PlayerList {
-private static final Logger LOG = Logger.getLogger(PlayerList.class.getName());
+    private static final Logger LOG = Logger.getLogger(PlayerList.class.getName());
 
 
     private static final String SAVES_DIR = "saves";
@@ -21,26 +25,34 @@ private static final Logger LOG = Logger.getLogger(PlayerList.class.getName());
     private static final int PLAYER_NAME_POSITION = 1;
     private static final int CURRENT_PLAYER_MARKER_POSITION = 2;
 
-    private final GameScheme gameScheme;
-    private final Path savePaths;
-    private Map<String, PlayerSaveInfo> playerListMap;
+    private final GameScheme gameScheme;                // The GameScheme currently loaded
+    private final Path savePaths;                       // The path of the save folders
+    private Map<String, PlayerSaveInfo> playerListMap;  // The list of players
 
-    private int nextNewPlayerNumber;
+    private int nextNewPlayerNumber;                    // The folder number that will be used for the next new player
 
+    /**
+     * Creates the PlayerList for the given GameScheme
+     * @param sts the given gameScheme
+     */
     public PlayerList(GameScheme sts){
         gameScheme = sts;
         savePaths = gameScheme.getStoryPath().resolve(SAVES_DIR);
 
         nextNewPlayerNumber = 1;
         populatePlayerListMap();
-
-
     }
 
+    /**
+     * @return the list of players (Unmodifiable)
+     */
     public Set<String> getPlayerList(){
         return Collections.unmodifiableSet(playerListMap.keySet());
     }
 
+    /**
+     * loads the list of players from the save information file
+     */
     private void populatePlayerListMap() {
         playerListMap = new TreeMap<>();
 
@@ -65,11 +77,19 @@ private static final Logger LOG = Logger.getLogger(PlayerList.class.getName());
         }
     }
 
-
+    /**
+     * @param selectedItem The wanted player
+     * @return the wanted player's PlayerSaveInfo
+     */
     public PlayerSaveInfo getPlayer(String selectedItem) {
         return playerListMap.get(selectedItem);
     }
 
+    /**
+     * Adds a new player to the GameScheme
+     * Creates its save folder and informations
+     * @param playerAttribs The player's attributes
+     */
     public void addPlayer(Map<String, String> playerAttribs) {
         String folderNumber = String.format("%03d", nextNewPlayerNumber++);
         Path savePath = savePaths.resolve(folderNumber);
@@ -82,6 +102,9 @@ private static final Logger LOG = Logger.getLogger(PlayerList.class.getName());
         updatePlayerListFile();
     }
 
+    /**
+     * Updates the file containing the players list, associated save folder and last played player
+     */
     public void updatePlayerListFile() {
         StringBuilder sb = new StringBuilder();
 
