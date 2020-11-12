@@ -11,8 +11,11 @@ import spacegame3.util.tablikepane.TabRecord;
 import spacegame3.userinterface.SizableScene;
 import spacegame3.util.tablikepane.TabPaneLike;
 
+/**
+ * This class is the scene representing the CelestialBody the player has landed on
+ * This Scene is composed of tabs, 1 per building / site on the Celestial Body
+ */
 public class PlanetScreen extends SizableScene {
-
 
     private final TabPaneLike pane;
 
@@ -23,7 +26,7 @@ public class PlanetScreen extends SizableScene {
     private Button departButton;
 
     /**
-     * Creates a Scene for a specific root Node.
+     * Creates the PlanetScreen linked to its instance of the game
      */
     public PlanetScreen(SpaceGame spaceGame) {
         super(new BorderPane(), spaceGame);
@@ -39,6 +42,7 @@ public class PlanetScreen extends SizableScene {
         root.setBottom(bottomBar);
 
         setOnKeyReleased(event -> {
+            // using switch to ease maintainability (ie when other key released event will be added)
             switch (event.getCode()) {
                 case ESCAPE: mainTheater.showStartScreen(this);
                 break;
@@ -47,6 +51,10 @@ public class PlanetScreen extends SizableScene {
         });
     }
 
+    /**
+     * Creates the GridPane used for the Bottom bar
+     * @return the created GridPane
+     */
     private GridPane createBottomBar() {
         GridPane gp = new GridPane();
         gp.setStyle("-fx-background-color: lightgrey");
@@ -79,6 +87,10 @@ public class PlanetScreen extends SizableScene {
         return gp;
     }
 
+    /**
+     * Creates the GridPane used for the Top bar
+     * @return the created GridPane
+     */
     private GridPane createTopBar() {
         GridPane gp = new GridPane();
         gp.setStyle("-fx-background-color: lightgrey");
@@ -101,10 +113,17 @@ public class PlanetScreen extends SizableScene {
         return gp;
     }
 
+    /**
+     * Set the CelestialBody the PlanetScreen will be showing/shows
+     * @param body The CelestialBody the player is currently on
+     */
     public void setLandedOn(CelestialBody body){
         landedOn = body;
     }
 
+    /**
+     * Refreshes the PlanetScreen to set all the tabs and information to the correct CelestialBody
+     */
     @Override
     public void refresh() {
         pane.clear();
@@ -123,18 +142,36 @@ public class PlanetScreen extends SizableScene {
 
     }
 
+    /**
+     * @return The CelestialBody currently shown by the PlanetScreen
+     */
     public CelestialBody getLandedOn() {
         return landedOn;
     }
 
+    /**
+     * @return The current GameScheme
+     */
     public GameScheme getGameScheme(){
         return mainTheater.getGameScheme();
     }
 
+    /**
+     * Places a Label in the Top Bar
+     * @param columnNum The column number where the label will be placed
+     * @param rowNum    The row number where the label will be placed
+     * @param label     The label to place
+     */
     public void setInTopGrid(int columnNum, int rowNum, Label label) {
         topBar.add(label, columnNum, rowNum);
     }
 
+    /**
+     * Places a Label in the Bottom Bar
+     * @param columnNum The column number where the label will be placed
+     * @param rowNum    The row number where the label will be placed
+     * @param label     The label to place
+     */
     public void setInBottomGrid(int columnNum, int rowNum, Label label) {
         bottomBar.add(label, columnNum, rowNum);
     }

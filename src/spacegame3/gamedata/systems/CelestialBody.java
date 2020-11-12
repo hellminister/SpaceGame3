@@ -1,6 +1,5 @@
 package spacegame3.gamedata.systems;
 
-import spacegame3.gamedata.objectstructure.CelestialBodyStructure;
 import spacegame3.util.tablikepane.TabRecord;
 
 import java.util.HashMap;

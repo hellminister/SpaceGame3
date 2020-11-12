@@ -1,7 +1,8 @@
 package spacegame3.gamedata;
 
-import spacegame3.gamedata.objectstructure.CelestialBodyStructure;
-import spacegame3.gamedata.objectstructure.PlayerStructure;
+import spacegame3.gamedata.player.currencies.CurrenciesStructure;
+import spacegame3.gamedata.systems.CelestialBodyStructure;
+import spacegame3.gamedata.player.PlayerStructure;
 import spacegame3.gamedata.ship.ShipFactory;
 import spacegame3.gamedata.systems.Universe;
 import spacegame3.gamedata.time.StarDateFormatter;
@@ -26,6 +27,7 @@ public class StoryTellingScheme {
     private String description;
     private final String storyName;
     private PlayerStructure playerStructure;
+    private CurrenciesStructure currenciesStructure;
     private Universe universe;
     private final Map<String, StarDateFormatter> timeFormatters;
     private CelestialBodyStructure celestialBodyStructure;
@@ -62,6 +64,13 @@ public class StoryTellingScheme {
             playerStructure = new PlayerStructure(resourcesPath);
         }
         return playerStructure;
+    }
+
+    public CurrenciesStructure getCurrenciesStructure(){
+        if (currenciesStructure == null){
+            currenciesStructure = new CurrenciesStructure(resourcesPath);
+        }
+        return currenciesStructure;
     }
 
     public CelestialBodyStructure getCelestialBodyStructure(){

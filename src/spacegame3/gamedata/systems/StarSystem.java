@@ -1,7 +1,5 @@
 package spacegame3.gamedata.systems;
 
-import spacegame3.gamedata.objectstructure.CelestialBodyStructure;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

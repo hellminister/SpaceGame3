@@ -1,4 +1,4 @@
-package spacegame3.gamedata.objectstructure;
+package spacegame3.gamedata.systems;
 
 import java.io.BufferedReader;
 import java.io.IOException;

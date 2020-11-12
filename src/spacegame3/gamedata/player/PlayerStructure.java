@@ -1,4 +1,4 @@
-package spacegame3.gamedata.objectstructure;
+package spacegame3.gamedata.player;
 
 import spacegame3.userinterface.startscreen.QuestionBox;
 
