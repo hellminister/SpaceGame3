@@ -1,5 +1,7 @@
 package spacegame3.gamedata.systems;
 
+import spacegame3.gamedata.StoryTellingScheme;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +19,7 @@ public class StarSystem {
     private final Map<String, CelestialBody> celestialBodies;
 
 
-    public StarSystem(Map<String, List<String>> data, CelestialBodyStructure cbs){
+    public StarSystem(Map<String, List<String>> data, StoryTellingScheme story){
         celestialBodies = new HashMap<>();
         attributes = new HashMap<>();
 
@@ -29,7 +31,7 @@ public class StarSystem {
                 case "contains" -> {
                     String[] objects = prop[PROP_VALUE_POSITION].split(",");
                     for (String id : objects) {
-                        CelestialBody cb = new CelestialBody(id, data, cbs);
+                        CelestialBody cb = new CelestialBody(id, data, story);
                         cb.setInSystem(this);
                         celestialBodies.put(id, cb);
                     }

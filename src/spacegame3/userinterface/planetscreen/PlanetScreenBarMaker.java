@@ -31,8 +31,10 @@ import static java.util.logging.Logger.getLogger;
  *                  cb : this is the celestial body shown by the PlanetScreen
  *                  ss : this is the star system containing the planet
  *                  stardate : this is the current time
+ *                  currency : this lets ask for a currency
+ *                  pl : this is the player
  *
- *                  the format for stardate is :stardate:calendarName:time_format
+ *                  the format for stardate is : stardate:calendarName:time_format
  *                  time_format is one of the value defined in the calendarName file
  *                  a small exemple of a file defining a top bar :
  *
@@ -40,6 +42,10 @@ import static java.util.logging.Logger.getLogger;
  *                  0,0 "Currently on %s %s of the %s system" "cb:type cb:name ss:name"
  *                  1,0 "" ""
  *                  2,0 "Stardate - %s" "stardate:iso8601:date_time_show"
+ *
+ *                  BottomBar
+ *                  0,0 "%d credits" "currency:credits"
+ *                  1,0 "%s %s" "pl:fname pl:lname"
  *
  */
 public class PlanetScreenBarMaker {
@@ -205,6 +211,8 @@ public class PlanetScreenBarMaker {
                         StarDateFormatter sdf =
                                 ps.getGameScheme().getStoryTellingScheme().getFormatter(splitted[1]);
                         yield ps.getGameScheme().getGameState().getCurrentTime().toString(sdf, splitted[2]);
+                    case "currency": yield ps.getGameScheme().getGameState().getCurrency(splitted[1]);
+                    case "pl": yield ps.getGameScheme().getGameState().getPlayer().getAttribValue(splitted[1]);
                     default:
                         LOG.severe(splitted[0] + " is untreated, sending null");
                         yield null;

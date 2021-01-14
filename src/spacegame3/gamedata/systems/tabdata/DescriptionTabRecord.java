@@ -1,5 +1,6 @@
 package spacegame3.gamedata.systems.tabdata;
 
+import spacegame3.gamedata.StoryTellingScheme;
 import spacegame3.userinterface.planetscreen.tabs.DescriptionTab;
 import spacegame3.util.tablikepane.TabRecord;
 
@@ -14,7 +15,7 @@ public class DescriptionTabRecord implements TabRecord {
     private String text = "";
     private String imageURL = "";
 
-    public DescriptionTabRecord(List<String> strings) {
+    public DescriptionTabRecord(List<String> strings, StoryTellingScheme story) {
         for (String s : strings){
             String[] prop = s.split("\\|");
                 switch (prop[0]){

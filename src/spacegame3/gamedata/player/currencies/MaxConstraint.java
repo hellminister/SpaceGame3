@@ -15,6 +15,11 @@ public class MaxConstraint extends CurrencyConstraint{
         this.max = max;
     }
 
+    @Override
+    protected boolean respectConstraint(int newValue, GameState gameState) {
+        return newValue < max;
+    }
+
     /**
      * @param old       the previous value
      * @param newValue  the new value

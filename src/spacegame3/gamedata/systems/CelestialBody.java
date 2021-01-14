@@ -1,5 +1,6 @@
 package spacegame3.gamedata.systems;
 
+import spacegame3.gamedata.StoryTellingScheme;
 import spacegame3.util.tablikepane.TabRecord;
 
 import java.util.HashMap;
@@ -18,12 +19,13 @@ public class CelestialBody extends StellarObject{
 
     protected final Map<String, String> properties;
 
-    public CelestialBody(String name, Map<String, List<String>> data, CelestialBodyStructure cbs) {
+    public CelestialBody(String name, Map<String, List<String>> data, StoryTellingScheme story) {
         super(name);
         tabInfo = new LinkedList<>();
         properties = new HashMap<>();
 
         List<String> systemData = data.get(name);
+        CelestialBodyStructure cbs = story.getCelestialBodyStructure();
         if (systemData != null && !systemData.isEmpty()) {
             for (String propraw : systemData) {
                 String[] prop = propraw.split("\\|");
@@ -32,12 +34,13 @@ public class CelestialBody extends StellarObject{
                         String[] objects = prop[PROP_VALUE_POSITION].split(",");
 
                         for (String id : objects){
-                            TabRecord tr = TabRecord.generate(data.get(id));
+                            TabRecord tr = TabRecord.generate(data.get(id), story);
                             tabInfo.add(tr);
                         }
 
                         break;
                     default:
+
                         if (cbs.validateValue(prop[PROP_NAME_POSITION], prop[PROP_VALUE_POSITION])){
                             properties.put(prop[PROP_NAME_POSITION], prop[PROP_VALUE_POSITION]);
                         } else {

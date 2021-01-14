@@ -1,5 +1,6 @@
 package spacegame3.gamedata.systems.tabdata;
 
+import spacegame3.gamedata.StoryTellingScheme;
 import spacegame3.userinterface.planetscreen.tabs.Spaceport;
 import spacegame3.util.tablikepane.TabRecord;
 
@@ -12,7 +13,7 @@ public class SpaceportTabRecord implements TabRecord {
 
     private String name = "Spaceport";
 
-    public SpaceportTabRecord(List<String> strings) {
+    public SpaceportTabRecord(List<String> strings, StoryTellingScheme story) {
         for (String s : strings){
             String[] prop = s.split("\\|");
             switch (prop[0]){

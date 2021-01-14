@@ -1,2 +1,3 @@
 InSystem:Sol
 OnPlanet:Earth
+Currency:credits:1000

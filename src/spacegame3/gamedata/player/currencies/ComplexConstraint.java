@@ -23,6 +23,11 @@ public class ComplexConstraint extends CurrencyConstraint{
     }
 
     @Override
+    protected boolean respectConstraint(int newValue, GameState gameState) {
+        return false;
+    }
+
+    @Override
     protected int valid(int old, int newValue, GameState gameState) {
         return 0;
     }

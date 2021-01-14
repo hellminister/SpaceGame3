@@ -11,6 +11,11 @@ public class NoConstraint extends CurrencyConstraint{
         super(null);
     }
 
+    @Override
+    protected boolean respectConstraint(int newValue, GameState gameState) {
+        return true;
+    }
+
     /**
      * @param old       the previous value
      * @param newValue  the new value

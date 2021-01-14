@@ -3,23 +3,29 @@ package spacegame3.userinterface.planetscreen.tabs.shipyard;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.TilePane;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import org.apache.commons.lang3.StringUtils;
 import spacegame3.gamedata.ship.Ship;
 import spacegame3.util.Utilities;
 import spacegame3.util.tablikepane.TabLike;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class ShipyardCategoryTab extends TabLike {
+    private static final Logger LOG = Logger.getLogger(ShipyardCategoryTab.class.getName());
 
     protected final String name;
     protected final ObservableList<Ship> ships;
     protected final boolean used;
 
-    protected final TilePane tp;
+    protected final FlowPane tp;
 
     protected ShipIcon selected;
 
@@ -39,17 +45,26 @@ public class ShipyardCategoryTab extends TabLike {
 
         Utilities.attach(sp, basePane.widthProperty(), basePane.heightProperty());
 
-        tp = new TilePane();
+        tp = new FlowPane();
 
         tp.setHgap(10);
         tp.setVgap(10);
 
         sp.setContent(tp);
+        sp.pannableProperty().set(true);
 
         sp.setFitToWidth(true);
+        sp.setStyle("-fx-background-color: black");
+        tp.setStyle("-fx-background-color: black");
+
+        this.basePane.getChildren().add(sp);
+        this.basePane.setStyle("-fx-background-color: black");
+        setStyle("-fx-background-color: black");
 
         for (Ship ship : ships){
             insertShip(ship);
+            LOG.info(() -> "Adding " + ship.getModelName());
+            LOG.info(() -> "Image " + ship.getIcon().toString());
         }
 
         ships.addListener((ListChangeListener<Ship>) change -> {
@@ -102,24 +117,49 @@ public class ShipyardCategoryTab extends TabLike {
         return name;
     }
 
-    private static class ShipIcon extends ImageView{
+    private static class ShipIcon extends StackPane{
         protected Ship me;
+        private HBox layout;
+
+        private Button test;
 
         public ShipIcon(Ship ship){
-            super(ship.getIcon());
+            super();
+            ImageView iv = new ImageView(ship.getIcon());
             me = ship;
-            setFitHeight(200);
-            setFitWidth(200);
-            setPreserveRatio(true);
+            iv.setFitHeight(150);
+            iv.setFitWidth(150);
+            iv.setPreserveRatio(true);
+            setStyle("-fx-background-color: black");
+
+            VBox rightSide = new VBox();
+
+            Label modelName = new Label(StringUtils.capitalize(me.getModelName()));
+
+            modelName.setFont(new Font("French Script MT", 24));
+            modelName.setTextFill(Color.DEEPSKYBLUE);
+
+            rightSide.getChildren().addAll(modelName, iv);
+
+            layout = new HBox();
+
+            test = new Button("Test");
+
+            layout.getChildren().addAll(rightSide);
+
+            this.getChildren().add(layout);
+
             unmarkSelected();
         }
 
         public void markSelected(){
-            setStyle("-fx-background-color: darkslategray");
+            setStyle("-fx-border-width: 2px; -fx-border-color: lightblue;");
+            layout.getChildren().add(test);
         }
 
         public void unmarkSelected(){
-            setStyle("-fx-background-color: black");
+            setStyle("-fx-border-width: 2px; -fx-border-color: transparent;");
+            layout.getChildren().remove(test);
         }
 
         public Ship getShip(){

@@ -3,7 +3,9 @@
     <CLASSES>
       <root url="file://$PROJECT_DIR$/../../../../Program Files/Java/javafx-sdk-15/lib" />
     </CLASSES>
-    <JAVADOC />
+    <JAVADOC>
+      <root url="file://$PROJECT_DIR$/../../../../Program Files/Java/javafx-sdk-15/openjfx-15.0.1-javadoc.zip" />
+    </JAVADOC>
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/../../../../Program Files/Java/javafx-sdk-15/src.zip!/javafx.base" />
       <root url="jar://$PROJECT_DIR$/../../../../Program Files/Java/javafx-sdk-15/src.zip!/javafx.controls" />

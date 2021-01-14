@@ -37,22 +37,22 @@ public class CurrenciesStructure {
                     for (int i = 1; i < words.length; i++) {
                         constraint = words[i].split(":");
                         try {
-                            switch (constraint[0]) {
-                                case "max" -> cc = new MaxConstraint(cc, Integer.parseInt(constraint[1]));
-                                case "maxR" -> cc = new MaxRevertConstraint(cc, Integer.parseInt(constraint[1]));
-                                case "min" -> cc = new MinConstraint(cc, Integer.parseInt(constraint[1]));
-                                case "minR" -> cc = new MinRevertConstraint(cc, Integer.parseInt(constraint[1]));
-                                case "complex" -> cc = new ComplexConstraint(cc, words[i]);
+                            cc = switch (constraint[0]) {
+                                case "max" -> new MaxConstraint(cc, Integer.parseInt(constraint[1]));
+                                case "min" -> new MinConstraint(cc, Integer.parseInt(constraint[1]));
+                                case "complex" -> new ComplexConstraint(cc, words[i]);
                                 default -> {
                                     String[] finalConstraint = constraint;
                                     LOG.severe(() -> finalConstraint[0] + " is untreatable " + Arrays.toString(finalConstraint));
+                                    yield null;
                                 }
-                            }
+                            };
                         } catch (Exception e){
                             LOG.severe(e::toString);
                         }
 
                     }
+
                     currencies.put(words[0], cc);
                 }
 

@@ -1,7 +1,7 @@
 #SYSTEM is used internally to identify the star system
 :contains|Sun,Earth
 Sun:type|Star
-Earth:contains|p1d1,p1d2,p1d3
+Earth:contains|p1d1,p1d2,p1d3,p1d4
 Earth:type|Planet
 p1d1:tab|DESCRIPTION
 p1d1:name|Earth
@@ -11,3 +11,7 @@ p1d2:tab|SPACEPORT
 p1d2:name|Destiny
 p1d3:tab|SHIPYARD
 p1d3:name|Shipyard
+p1d3:newShips|ship1:a,ship1:a,ship1:a
+p1d4:tab|DESCRIPTION
+p1d4:name|Test
+p1d4:image|ships/kisspng-2d-computer-graphics-sprite-ship-drawing-spaceship-5ac745ed525d48.4847523315230090053374.png

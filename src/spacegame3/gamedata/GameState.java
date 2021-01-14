@@ -1,6 +1,8 @@
 package spacegame3.gamedata;
 
+import javafx.beans.property.ReadOnlyIntegerProperty;
 import spacegame3.gamedata.player.Player;
+import spacegame3.gamedata.player.currencies.Currencies;
 import spacegame3.gamedata.systems.CelestialBody;
 import spacegame3.gamedata.systems.StarSystem;
 import spacegame3.gamedata.time.StarDate;
@@ -8,6 +10,7 @@ import spacegame3.gamedata.time.StarDate;
 public class GameState {
 
     private final Player player;
+    private Currencies currencies;
     private final StarDate currentTime;
 
     private GameScheme gameScheme;
@@ -65,5 +68,21 @@ public class GameState {
 
     public StarSystem getStarSystem() {
         return ss;
+    }
+
+    public void initializeCurrencies(Currencies generated) {
+        this.currencies = generated;
+    }
+
+    public void setCurrency(String type, String amount) {
+        currencies.set(type, Integer.parseInt(amount), this);
+    }
+
+    public ReadOnlyIntegerProperty getCurrency(String currencyName) {
+        return currencies.property(currencyName);
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }

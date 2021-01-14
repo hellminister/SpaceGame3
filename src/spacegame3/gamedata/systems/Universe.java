@@ -42,21 +42,20 @@ public class Universe {
             String line = read.readLine();
             while (line != null){
                 if (!line.isBlank() && !line.startsWith("#")) {
-                    String[] splitted = line.split(":");
+                    String[] splitted = line.split(":", 2);
                     String id = splitted[ID_POSITION];
 
                     if ("".equals(id)) {
                         id = StarSystem.ID_NAME;
                     }
 
-                    data.computeIfAbsent(id, k -> new LinkedList<>()).add(String.join(":", Arrays.copyOfRange(splitted
-                            , 1, splitted.length)));
+                    data.computeIfAbsent(id, k -> new LinkedList<>()).add(splitted[1]);
 
                 }
                 line = read.readLine();
             }
 
-            ss = new StarSystem(data, story.getCelestialBodyStructure());
+            ss = new StarSystem(data, story);
 
 
         } catch (IOException e) {

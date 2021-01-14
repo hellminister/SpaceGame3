@@ -26,6 +26,21 @@ public abstract class CurrencyConstraint {
         }
     }
 
+    /**
+     * Verify if the given amount respects this constraint
+     * @param newValue  The amount to verify
+     * @param gameState The state of the game
+     * @return if the given amount respects this constraint
+     */
+    public final boolean withinLimits(int newValue, GameState gameState){
+        if (respectConstraint(newValue, gameState)){
+            return next == null || next.respectConstraint(newValue, gameState);
+        }
+        return false;
+    }
+
+    protected abstract boolean respectConstraint(int newValue, GameState gameState);
+
     protected abstract int valid(int old, int newValue, GameState gameState);
 
 

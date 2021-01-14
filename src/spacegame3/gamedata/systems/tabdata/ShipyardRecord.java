@@ -3,7 +3,9 @@ package spacegame3.gamedata.systems.tabdata;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
+import spacegame3.gamedata.StoryTellingScheme;
 import spacegame3.gamedata.ship.Ship;
+import spacegame3.gamedata.ship.ShipFactory;
 import spacegame3.userinterface.planetscreen.tabs.shipyard.Shipyard;
 import spacegame3.util.tablikepane.TabRecord;
 
@@ -16,11 +18,15 @@ public class ShipyardRecord implements TabRecord {
 
     private String name;
 
+    private final ShipFactory factory;
+
     private final ObservableMap<String, ObservableList<Ship>> newShips;
     private final ObservableMap<String, ObservableList<Ship>> secondhandShips;
 
-    public ShipyardRecord(List<String> strings){
+    public ShipyardRecord(List<String> strings, StoryTellingScheme story){
         name = "Shipyard";
+
+        factory = story.getShipFactory();
 
         newShips = createMap();
         secondhandShips = createMap();
@@ -30,6 +36,17 @@ public class ShipyardRecord implements TabRecord {
             switch (prop[0]){
                 case "name" -> name = prop[1];
                 case "tab" -> { /* do nothing, it was already treated*/ }
+                case "newShips" -> {
+                    String[] ships = prop[1].split(",");
+                    for (String shipName : ships){
+                        String[] shipVariant = shipName.split(":", 2);
+                        Ship ship = factory.getShip(shipVariant[0], shipVariant[1]);
+
+                        // TODO change this to fit good categories once this is done
+
+                        newShips.get("A").add(ship);
+                    }
+                }
                 default -> LOG.warning(() -> prop[0] + " not treated " + Arrays.toString(prop));
             }
         }

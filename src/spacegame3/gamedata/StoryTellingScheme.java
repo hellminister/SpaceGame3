@@ -110,6 +110,7 @@ public class StoryTellingScheme {
     }
 
     public void startState(GameState gameState) {
+        gameState.initializeCurrencies(getCurrenciesStructure().generate());
         try (BufferedReader br = Files.newBufferedReader(resourcesPath.resolve(START_FILE))){
             String line = br.readLine();
 
@@ -118,6 +119,7 @@ public class StoryTellingScheme {
                 switch (split[0]){
                     case "InSystem" -> gameState.setSystem(getUniverse().getStarSystem(split[1]));
                     case "OnPlanet" -> gameState.setPlanet(split[1]);
+                    case "Currency" -> gameState.setCurrency(split[1], split[2]);
                 }
                 line = br.readLine();
             }
