@@ -35,7 +35,7 @@ public class StartScreen extends SizableScene {
 
     private static final int HEIGHT = 480;
     private static final String BACK_IMAGE_FILE_PATH = "backgrounds/PIA17563-1920x1200.jpg";
-    private static final Path CREDIT_FILE = Paths.get("src/resources/commons/credits.txt");
+    private static final Path CREDIT_FILE = Paths.get("src/main/resources/commons/credits.txt");
 
     private static final int GRID_PANE_MENU_THIRD = 50;
     private static final int BUTTONS_X_TRANSLATE = -10;

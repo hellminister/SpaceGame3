@@ -25,7 +25,7 @@ public final class SpaceGame extends Application {
     private static final Logger LOG = Logger.getLogger(SpaceGame.class.getName());
 
     static {
-        Path logConfigFile = Paths.get("src/resources/commons/logging.properties");
+        Path logConfigFile = Paths.get("src/main/resources/commons/logging.properties");
         LOG.info(() -> logConfigFile.toAbsolutePath().toString());
         System.setProperty("java.util.logging.config.file", logConfigFile.toAbsolutePath().toString());
         try {

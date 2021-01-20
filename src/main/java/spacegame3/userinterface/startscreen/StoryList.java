@@ -20,7 +20,7 @@ import java.util.stream.Stream;
  */
 public class StoryList {
     private static final Logger LOG = Logger.getLogger(StoryList.class.getName());
-    private static final Path STORIES_HEAD = Paths.get("src/resources/stories");
+    private static final Path STORIES_HEAD = Paths.get("src/main/resources/stories");
 
     private Map<String, GameScheme> stories;
 
