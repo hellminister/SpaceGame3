@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SpaceGame3.iml" filepath="$PROJECT_DIR$/SpaceGame3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../tablikepane/tablikepane/tablikepane.iml" filepath="$PROJECT_DIR$/../tablikepane/tablikepane/tablikepane.iml" />
     </modules>
   </component>
 </project>

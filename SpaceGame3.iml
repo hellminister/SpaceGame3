@@ -19,5 +19,7 @@
     <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:win:15.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-base:15.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-base:win:15.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.9" level="project" />
+    <orderEntry type="library" name="Maven: ca.dauqui:tablikepane:1.0-SNAPSHOT" level="project" />
   </component>
 </module>

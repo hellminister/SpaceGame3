@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 public final class ImageLibrary {
     private static final Logger LOG = Logger.getLogger(ImageLibrary.class.getName());
 
-    private static final String IMAGE_LIBRARY_FILE_PATH = "/resources/commons/images/";
+    private static final String IMAGE_LIBRARY_FILE_PATH = "src/main/resources/commons/images/";
     private static final String IMAGE_STORY_FILE_PATH = "data/images/";
 
     private static final ImageLibrary library = new ImageLibrary();
